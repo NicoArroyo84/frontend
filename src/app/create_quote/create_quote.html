@@ -1,0 +1,83 @@
+﻿
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <h3 class="panel-title">Create Quote</h3>
+        <a class="navbar-triangle"></a>
+    </div>
+    <div class="panel-body ">
+
+        <form  name="quoteForm" class="form-horizontal" role="form">
+            <div>
+
+                <br />
+                <div class="form-group" ng-class="{ 'has-error' : quoteForm.reference.$invalid && !quoteForm.reference.$pristine }">
+                    <label for="quote_reference" class="col-xs-3 control-label">Quote Reference: </label>
+                    <div class="col-xs-8">
+                        <input name="reference" required id="quote_reference" ng-model="quote.quote_reference" autocomplete="off" maxlength="9" class="form-control input-sm text-uppercase" /><span class="mandatory-mark">*</span>
+                        <p ng-show="quoteForm.reference.$invalid && !quoteForm.reference.$pristine" class="help-block">Quote Reference is required.</p>
+                        <!--<input id="quote_reference" init-focus auto-complete ui-items="quote.quotesList" ng-change="quote.UpdateAutocomplete()" ng-model="quote.quote" maxlength="9" class="form-control input-sm" />-->
+                    </div>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : quoteForm.name.$invalid && !quoteForm.name.$pristine }">
+                    <label for="quote_name" class="col-xs-3 control-label">Quote Name: </label>
+                    <div class="col-xs-8">
+                        <input name="name" required id="quote_name" ng-model="quote.quote_name" autocomplete="off" maxlength="35" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                        <p ng-show="quoteForm.name.$invalid && !quoteForm.name.$pristine" class="help-block">Quote Name is required.</p>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-9"></div>
+                    <div class="col-xs-2">
+                        <div class="checkbox">
+                            <label> <input type="checkbox" ng-model="quote.archived" />Archived</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-show="quote.archived">
+                    <label class="col-xs-3 control-label">Archive Reason: </label>
+                    <div class="col-xs-8">
+                        <select ng-model="quote.archive_reason" class="form-control input-sm" >
+                            <option required ng-repeat="reason in quote.ntu_reasons" value="{{reason.ID}}">{{reason.Name}}</option>
+                        </select><span class="mandatory-mark">*</span>
+                    </div>
+                </div>
+
+
+                <br />
+                <br />
+
+                <div class="form-group">
+                    <div class="col-sm-7"></div>
+                    <div class="col-sm-2">
+                        <button ng-click="quote.Cancel()" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
+                    </div>
+                    <div class="col-sm-2">
+                        <button ng-disabled="quoteForm.$invalid || (quote.archived && !quote.archive_reason) " ng-click="quote.Finish()" class="btn btn-tiw-green btn-primary btn-block">Finish</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#quote_reference").ForceStrictAlphaNumerics();
+        $("#quote_name").ForceStrictAlphaNumerics(true);
+        angular.element("input:text").on("keypress", function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+            }
+
+        })
+    });
+
+
+</script>

@@ -1,0 +1,94 @@
+﻿
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Create UCR</h3>
+            <a class="navbar-triangle"></a>
+        </div>
+        <div class="panel-body ">
+
+
+            <form name="ucrForm" novalidate class="form-horizontal" role="form">
+                <div>
+                    <br />
+
+                    <div class="form-group" ng-class="{ 'has-error' : (ucrForm.umr.$invalid && !ucrForm.umr.$pristine) || (!ucr.umrValid) }">
+                        <label class="col-xs-3 control-label">UMR:</label>
+                        <div class="col-xs-8">
+                            <input id="umr" autocomplete="off" init-focus auto-complete required name="umr" ui-items="ucr.UmrList" ng-blur="ucr.ValidateUMR()" ng-keypress="ucr.umrErrorText=''" ng-change="ucr.UpdateUmr()" ng-model="ucr.umr" class="form-control input-sm text-uppercase" /><span class="mandatory-mark">*</span>
+                            <p ng-show="ucrForm.umr.$invalid && !ucrForm.umr.$pristine" class="help-block">UMR is required.</p>
+                            <p ng-show="!ucr.umrValid && !ucrForm.umr.$invalid" class="help-block">{{ucr.umrErrorText}}</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-class="{ 'has-error' : (ucrForm.claim_reference.$invalid && !ucrForm.claim_reference.$pristine) }">
+                        <label class="col-xs-3 control-label">Claim Reference:</label>
+
+                        <!--<div class="col-xs-2">
+                            <select required name="broker_code" ng-model="ucr.broker_code" ng-change="ucr.ValidateUCR()" class="form-control input-sm">
+                                <option main="{{code.MainBrokerCode}}" ng-repeat="code in ucr.broker_code_list" value="{{code.BrokerCode}}">{{code.BrokerCode}}</option>
+                            </select>
+                            <p ng-show="(ucrForm.ucr.$invalid || ucrForm.broker_code.$invalid) && ( !ucrForm.ucr.$pristine && !ucrForm.broker_code.$pristine)" class="help-block ucr-validation-error">UCR is required.</p>
+                        </div>-->
+
+                        <div class="col-xs-8">
+                            <input only-digits ng-trim="false" autocomplete="off" required name="claim_reference" ng-model="ucr.claim_reference" ng-blur="ucr.ValidateUCR()" id="ucr" class="form-control input-sm text-uppercase" /><span class="mandatory-mark">*</span>
+                            <p ng-show="(ucrForm.claim_reference.$invalid) && ( !ucrForm.claim_reference.$pristine)" class="help-block ucr-validation-error">Claim Reference is required.</p>
+                        </div>
+
+                        <div class="col-xs-1" style="padding-left: 10px; padding-top: 6px; width: 10px; float: left;">
+                            <span style="cursor:pointer;" id="ucr_help" ng-model="ucr_help" data-content="" data-placement="right" data-toggle="popover" data-container="body" class="glyphicon glyphicon-question-sign" data-original-title="" title=""></span>
+                        </div>
+                    </div>
+
+                    <br />
+                    <br />
+
+                    <div class="form-group">
+                        <div class="col-sm-7"></div>
+
+                        <div class="col-sm-2">
+                            <button ng-click="ucr.Cancel()" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <button ng-disabled="ucrForm.$invalid || !ucr.umrValid" ng-click="ucr.CreateUCR()" class="btn btn-tiw-green btn-primary btn-block">Finish</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        //to avoid to use enter on text input and get back to the previous page as the cancel button always comes first
+        //$(document).ready(function () {
+
+        //    angular.element("input:text").on("keypress", function (e) {
+        //        if (e.keyCode == 13) {
+        //            e.preventDefault();
+        //        }
+
+        //    })
+
+        //})
+
+
+        $(document).ready(function () {
+
+            //to avoid to use enter on text input and get back to the previous page as the cancel button always comes first
+            $(document).ready(function () {
+
+                angular.element("input:text").on("keypress", function (e) {
+                    if (e.keyCode == 13) {
+                        e.preventDefault();
+                    }
+
+                })
+
+            })
+
+        });
+
+    </script>

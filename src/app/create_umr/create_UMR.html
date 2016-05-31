@@ -1,0 +1,181 @@
+﻿
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Create UMR</h3>
+        <a class="navbar-triangle"></a>
+    </div>
+    <div class="panel-body ">
+
+        <form name="umrForm" class="form-horizontal" role="form" novalidate>
+            <div>
+
+                <br />
+                <div class="form-group"  ng-class="{ 'has-error' : (umrForm.client_name.$invalid && !umrForm.client_name.$pristine) || (!umr.umrValid && !umrForm.client_name.$pristine) }">
+                    <label for="quote" class="col-xs-3 control-label">Client: </label>
+                    <div class="col-xs-8">
+                        <input autocomplete="off" id="client_name" name="client_name" required ng-blur="umr.UpdateClientDetails()" init-focus auto-complete ui-items="umr.clientsList" ng-change="umr.UpdateAutocompleteClient()" ng-model="umr.client_name" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                        <p ng-show="umrForm.client_name.$invalid && !umrForm.client_name.$pristine" class="help-block">Client is required.</p>
+                        <p ng-show="!umr.umrValid && !umrForm.client_name.$pristine" class="help-block">Client is not valid.</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <!--<label for="quote" class="col-xs-3 control-label"></label>-->
+                    <div class="">
+                        <div class="accordion panel-group" id="accordion" role="tablist" aria-multiselectable="true" aria-expanded="true">
+                            <div class="panel panel-default">
+                                <div class="accordion-header panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-target="#collapseOne" data-parent="#accordion" aria-expanded="true" aria-controls="collapseOne">
+                                            Client Details  <span class="glyphicon" ng-class="{'glyphicon-chevron-right' : !umr.arrow, 'glyphicon-chevron-down' : umr.arrow}"></span>
+                                        </a>
+                                    </h4>
+                                </div>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="accordion-body panel-body">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group" ng-class="{ 'has-error' : (umrForm.broker_code.$invalid && !umrForm.broker_code.$pristine) }">
+                    <label class="col-xs-3 control-label">UMR:</label>
+                    <div class="col-xs-2">
+                        <select required name="broker_code" ng-change="umr.ValidateUMR()" ng-model="umr.broker_code" class="form-control input-sm">
+                            <option main="{{code.MainBrokerCode}}" ng-repeat="code in umr.broker_code_list" value="{{code.BrokerCode}}">{{code.BrokerCode}}</option>
+                        </select>
+                        <p ng-show="umrForm.broker_code.$invalid && !umrForm.broker_code.$pristine" class="help-block ucr-validation-error">Broker Code is required.</p>
+
+                    </div>
+                    <div class="col-xs-6 no-padding-left">
+                        <input readonly="readonly" ng-blur="umr.ValidateUMR()" ng-model="umr.umr_text" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                    </div>
+                </div>
+                <div ng-show="(umr.broker_code != umr.main_broker_code) && umr.broker_code" ng-class="{ 'has-error' : (umrForm.policy_ref.$invalid && !umrForm.policy_ref.$pristine || ((umr.broker_code != umr.main_broker_code) && (!umr.policy_ref) && !umrForm.policy_ref.$pristine)) }" class="form-group">
+                    <label class="col-xs-3 control-label">Internal Policy Reference:</label>
+                    <div class="col-xs-8">
+                        <input name="policy_ref" ng-model="umr.policy_ref" autocomplete="off" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                        <p ng-show="(umrForm.policy_ref.$invalid && !umrForm.policy_ref.$pristine || ((umr.broker_code != umr.main_broker_code) && (!umr.policy_ref) && !umrForm.policy_ref.$pristine))" class="help-block ucr-validation-error">Internal Policy Reference is required.</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
+                        <div class="checkbox">
+                            <label> <input ng-change="umr.ResetQuote()" type="checkbox" ng-model="umr.from_quote" />From Quote</label>
+                        </div>
+                    </div>
+                    <div class="col-xs-2"></div>
+                    <div ng-show="umr.from_quote" class="col-xs-3">
+                        <div class="checkbox">
+                            <label> <input ng-disabled="!umr.from_quote" ng-click="umr.quote=''" type="checkbox" ng-model="umr.include_archived" />Include Archived</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="umr.from_quote" class="form-group" ng-class="{ 'has-error' : (!umr.quoteValid && !umrForm.quote_reference.$pristine && umr.from_quote) || (umrForm.quote_reference.$invalid && !umrForm.quote_reference.$pristine && umr.from_quote) }">
+                    <label for="quote" class="col-xs-3 control-label">Search Quote</label>
+                    <div class="col-xs-8">
+                        <input id="quote_reference" name="quote_reference" init-focus auto-complete autocomplete="off" ui-items="umr.quotesList" ng-change="umr.UpdateAutocomplete()" ng-blur="umr.CheckQuote()" ng-model="umr.quote" maxlength="9" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                        <p ng-show="!umr.quote && !umrForm.quote_reference.$pristine && umr.from_quote" class="help-block ">Quote Reference is required.</p>
+                        <p ng-show="!umr.quoteValid && !umrForm.quote_reference.$pristine && umr.from_quote" class="help-block ">Quote Reference is not valid.</p>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : (umrForm.risk_year.$invalid && !umrForm.risk_year.$pristine) || ((umr.risk_year.length < 4) && !umrForm.risk_year.$pristine) }">
+                    <label for="quote" class="col-xs-3 control-label">Risk Year</label>
+                    <div class="col-xs-2">
+                        <input ng-trim="false" required name="risk_year" ng-model="umr.risk_year" ng-change="umr.UpdateUMR()" autocomplete="off" only-digits maxlength="4" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+
+                    </div>
+                    <div class="col-xs-7">
+                        <p ng-show="umrForm.risk_year.$invalid && !umrForm.risk_year.$pristine" class="help-block ucr-validation-error">Risk Year is required.</p>
+                        <p ng-show="(umr.risk_year.length < 4) && !umrForm.risk_year.$pristine" class="help-block ucr-validation-error">Risk Year must be 4 chars in length.</p>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : (umrForm.insurance_name.$invalid && !umrForm.insurance_name.$pristine) }">
+                    <label for="quote" class="col-xs-3 control-label">Insured Name</label>
+                    <div class="col-xs-8">
+                        <input name="insurance_name" required maxlength="250" ng-model="umr.insurance_name" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                        <p ng-show="umrForm.insurance_name.$invalid && !umrForm.insurance_name.$pristine" class="help-block">Insured Name is required.</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="quote" class="col-xs-3 control-label">Department Code</label>
+                    <div class="col-xs-8">
+                        <select required ng-change="umr.UpdateUMR()" ng-model="umr.dep_code" class="form-control input-sm">
+                            <option ng-repeat="code in umr.dep_codes_list" value="{{code.Shortcut}}">{{code.Value}}</option>
+                        </select><span class="mandatory-mark">*</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="quote" class="col-xs-3 control-label">Class of Business</label>
+                    <div class="col-xs-8">
+                        <select required ng-model="umr.class_buss" class="form-control input-sm">
+                            <option ng-repeat="code in umr.class_of_bussiness_list" value="{{code.Shortcut}}">{{code.Value}}</option>
+                        </select><span class="mandatory-mark">*</span>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : (umrForm.unique_policy_number.$invalid && !umrForm.unique_policy_number.$pristine) }">
+                    <label for="quote" class="col-xs-3 control-label">Unique Policy Number</label>
+                    <div class="col-xs-2">
+                        <input required ng-trim="false" name="unique_policy_number" only-digits maxlength="4" ng-change="umr.UpdateUMR()" ng-model="umr.unique_policy_number" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                    </div>
+                    <div class="col-xs-7">
+                        <p ng-show="umrForm.unique_policy_number.$invalid && !umrForm.unique_policy_number.$pristine" class="help-block">Insured Name is required.</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-3">
+                        <div class="checkbox">
+                            <label> <input type="checkbox" ng-model="umr.binding_authority" />Binding Authority</label>
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <div class="checkbox">
+                            <label> <input type="checkbox" ng-model="umr.lineslip" />Lineslip</label>
+                        </div>
+                    </div>
+                    <div class="col-xs-3">
+                        <div class="checkbox">
+                            <label> <input  type="checkbox" ng-model="umr.open_market" />Open Market</label>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="col-sm-7"></div>
+                    <div class="col-sm-2">
+                        <button ng-click="umr.Cancel()" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
+                    </div>
+                    <div class="col-sm-2">
+                        <button ng-disabled="umr.FormValid() || umrForm.$invalid " ng-click="umr.CreateUMR()" class="btn btn-tiw-green btn-primary btn-block">Finish</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+          //to avoid to use enter on text input and get back to the previous page as the cancel button always comes first
+          $(document).ready(function () {
+
+              angular.element("input:text").on("keypress", function (e) {
+                  if (e.keyCode == 13) {
+                      e.preventDefault();
+                  }
+
+              })
+
+          })
+
+</script>

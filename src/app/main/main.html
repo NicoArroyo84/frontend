@@ -1,0 +1,69 @@
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{main.menuCaption}}</h3>
+    <a class="navbar-triangle"></a>
+  </div>
+  <div class="panel-body ">
+    <div ng-show="!main.IsUserAllowed">
+      <br />
+      <br />
+      <p> USER NOT ALLOW TO ENTER INTO THE SYSTEM .</p>
+      <br />
+      <br />
+    </div>
+    <form ng-show="main.IsUserAllowed" class="form-horizontal" role="form">
+      <div class="main-options">
+        <div class="form-group">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-10">
+            <div class="" style="font-weight: bold;" id="select_operation" ng-model="select_operation">What would you like to do today?</div>
+          </div>
+        </div>
+        <br />
+        <div class="form-group">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-3">
+            <button ng-disabled="!main.userPermissions.OperationsPermissions.CreateClient" ng-click="main.GoToCreateClientFolder()" class="btn btn-tiw-green btn-primary btn-block">Create Client Folder</button>
+          </div>
+
+          <div class="col-sm-3">
+            <button ng-disabled="!main.userPermissions.OperationsPermissions.CreateQuote" ng-click="main.GoToCreateQuote()" class="btn btn-tiw-green btn-primary btn-block">Create Quote</button>
+          </div>
+
+          <div class="col-sm-3">
+            <button ng-disabled="!main.userPermissions.OperationsPermissions.CreateQuote" ng-click="main.GoToArchiveQuote()" class="btn btn-tiw-green btn-primary btn-block">Archive Quote</button>
+          </div>
+        </div>
+        <br />
+        <div class="form-group">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-3">
+            <button ng-disabled="!main.userPermissions.OperationsPermissions.CreateUMR" ng-click="main.GoToCreateUMR()" class="btn btn-tiw-green btn-primary btn-block">Create UMR</button>
+          </div>
+
+          <div class="col-sm-3">
+            <button ng-disabled="!main.userPermissions.OperationsPermissions.CreateUCR" ng-click="main.GoToCreateUCR()" class="btn btn-tiw-green btn-primary btn-block">Create UCR</button>
+          </div>
+
+          <div class="col-sm-3">
+          </div>
+        </div>
+
+        <br />
+      </div>
+      <br />
+      <br />
+
+      <div class="form-group">
+        <div class="col-sm-10"></div>
+
+        <div class="col-sm-2">
+          <button ng-click="" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
+        </div>
+      </div>
+
+
+    </form>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+$color-oxf: rgba(11, 83, 128, 0.93);
+$color-jhi: rgba(201,21,31,.90);
+.OXF .tiwNavbar-header {
+  background-color: $color-oxf;
+}
+
+.OXF .tiwNavbar-container{
+  //background: url(/Frontend/app/images/sprites_oxford.png);
+  background-repeat: no-repeat;
+  background-position-y: -8px;
+}
+
+.JHI .tiwNavbar-header {
+  background-color: $color-jhi;
+}
+
+.JHI .tiwNavbar-container{
+  //background: url(/Frontend/app/images/sprites_oxford.png);
+  background-repeat: no-repeat;
+  background-position: 3%;
+  background-position-y: 24px;
+}
