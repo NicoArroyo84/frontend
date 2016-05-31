@@ -42,18 +42,18 @@
 
 
         function IsUserAllowed() {
-            $.loadingLayerTIW();
+            angular.element.loadingLayerTIW();
             userService.IsUserAllowed($state.params.organisation, "CreateUCR").then(function (res) {
                 userService.IsUserAllowedPermission = res.data;
                 if (res.data) {
                     GetBrokerCodes();
                 } else {
-                    $.loadingLayerTIW();
+                    angular.element.loadingLayerTIW();
                     $state.go("main")
                 }
 
             }, function (res) {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
                 $state.go("main")
             });
         }
@@ -61,7 +61,7 @@
 
         function GetBrokerCodes() {
             umrService.GetBrokerCode(localStorage.getItem("organisation_name")).then(function (codes) {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
                 if (codes.data) {
                     vm.broker_code_list = codes.data;
 
@@ -75,7 +75,7 @@
                 }
 
             }, function () {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
             });
         }
 
@@ -95,7 +95,7 @@
         function ValidateUCR(create) {
             if (vm.claim_reference) {
                 if (!create) {
-                    $.loadingLayerTIW();
+                    angular.element.loadingLayerTIW();
                 }
                 ucrService.ValidateUCR(localStorage.getItem("organisation_name"), angular.element("#umr").val() + vm.claim_reference).then(function (res) {
 
@@ -104,11 +104,11 @@
                         if (create) {
                             ProceedCreateUCR();
                         } else {
-                            $.loadingLayerTIW();
+                            angular.element.loadingLayerTIW();
 
                         }
                     } else {
-                        $.loadingLayerTIW();
+                        angular.element.loadingLayerTIW();
                         if (res.data && res.data.FailReason) {
 
 
@@ -132,7 +132,7 @@
                     }
                 }, function () {
 
-                    $.loadingLayerTIW();
+                    angular.element.loadingLayerTIW();
                 });
             }
 
@@ -142,7 +142,7 @@
         function ValidateUMR(create) {
             vm.umrValid = false;
             if (angular.element("#umr").val()) {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
 
                 umrService.CheckValidUmr(localStorage.getItem("organisation_name"), angular.element("#umr").val()).then(function (response) {
                     var res = response.data;
@@ -151,11 +151,11 @@
                         if (create) {
                             ValidateUCR(true);
                         } else {
-                            $.loadingLayerTIW();
+                            angular.element.loadingLayerTIW();
                         }
 
                     } else {
-                        $.loadingLayerTIW();
+                        angular.element.loadingLayerTIW();
 
                         vm.umrErrorText = "UMR is not valid.";
 
@@ -193,7 +193,7 @@
         function ProceedCreateUCR() {
             ucrService.CreateUCR(localStorage.getItem("organisation_name"), angular.element("#umr").attr("idelement"), angular.element("#umr").val() + vm.claim_reference).then(function (response) {
                 var res = response.data;
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
                 if (res == -1) {
                     $.modalTIW({
                         headerText: "",
@@ -239,7 +239,7 @@
 
 
             }, function () {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
             });
 
         }

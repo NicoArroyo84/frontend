@@ -1,6 +1,1 @@
-﻿{
-  "id": "22",
-  "name": "client name",
-  "country": "France",
-  "isWIP" :  "true"
-}
+﻿[{"Id":"ClientName","Label":"Client Name","Value":"A\u0026amp;B Insurance Solutions LLC","Visible":true},{"Id":"ClientCode","Label":"Client Code","Value":"CA0539","Visible":true},{"Id":"NodeID","Label":"Node ID","Value":"185679","Visible":false},{"Id":"Location","Label":"Location","Value":null,"Visible":true}]

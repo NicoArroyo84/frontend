@@ -4,20 +4,20 @@
 //     Copyright (c) TIW Group.  All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------*/
-// 
+//
 //
 //
 //-----------------------------------------------------------------------*/
 
 "use strict";
-(function ($, window, document) {
+(function ($) {
 
 
 
 
     $.modalTIW = function (opts) {
 
-        if ($(".modal-backdrop").length) {
+        if (angular.element(".modal-backdrop").length) {
             return;
         }
 
@@ -68,7 +68,7 @@
 
 
 
-        var $myModal = $('<div class="modal fade" id="myTIWModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+        var $myModal = angular.element('<div class="modal fade" id="myTIWModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
 								'<div class="modal-dialog">' +
 							  '<div class="modal-content">' +
 								'<div class="modal-header">' +
@@ -104,12 +104,13 @@
                 case "error":
                     classMsg = "danger";
 
-            };
+            }
+
             if ($myModal.find(".alert").length) {
                 $myModal.find(".alert").hide();
             }
             $myModal.find(".modal-footer").prepend('<div class="alert alert-' + classMsg + ' alert-dismissable" style="text-align:left;margin-bottom:10px;width:100%;" ><button  type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>' + type.capitalize() + '!</strong></br><div> ' + msg + '</div></div>');
-            $(".alert-dismissable").find("div").html($(".alert-dismissable").find("div").html().replace(/\n/g, '<br/>'));
+          angular.element(".alert-dismissable").find("div").html(angular.element(".alert-dismissable").find("div").html().replace(/\n/g, '<br/>'));
         },
         toggleStyle = function () {
             $myModal.find(".modal-content").toggleClass("tiw-modal-content");

@@ -22,12 +22,15 @@
               //return $http.post("../../Client/GetClientGroups", { organisation: organisation });
           },
           CheckAccCode: function (organisation, clientCode) {
-              return $http.get("app/json/bool.json?v1");
+              return $http.get("app/json/bool.json");
               //return $http.post("../../Client/CheckClientCode", { organisation: organisation, clientCode: clientCode });
           },
           CreateClientFolder: function (organisation, clientName, clientCode, groupFolderNodeId, location) {
               return $http.post("../../Client/CreateClientFolder", { organisation: organisation, clientName: clientName, clientCode: clientCode, groupFolderNodeId: groupFolderNodeId, location: location });
-          }
+          },
+            getOrganisationTypes : function(){
+              return $http.get("app/json/organisations.json");
+            }
 
       }
     }

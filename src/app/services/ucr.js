@@ -18,7 +18,6 @@ angular.module('triremeApp')
           },
           ValidateUCR: function (organisation, ucr) {
               //return $http.post("../../Ucr/ValidateUcr", { organisation: organisation, ucr: ucr });
-
               return $http.get("app/json/bool.json");
           },
           CreateUCR: function (organisation, umrFolderNodeId, ucr) {

@@ -1,15 +1,1 @@
-﻿ [
-    {
-      "id": 1,
-      "name": "client 1"
-    },
-    {
-      "id": 2,
-      "name": "client 2"
-    },
-    {
-      "id": 3,
-      "name": "client 3"
-    }
-  ]
-
+﻿[{"Name":"A\u0026amp;B Insurance Solutions LLC","ClientCode":"CA0539","NodeId":185679,"Location":null},{"Name":"AB Exchange (UK) Limited","ClientCode":"CD2227","NodeId":212911,"Location":null},{"Name":"Abbey Protection Group Ltd","ClientCode":"CD2243","NodeId":213431,"Location":null},{"Name":"Abbot Associates Ltd","ClientCode":"CD0037","NodeId":207808,"Location":null},{"Name":"Absolute Insurance Brokers Limited","ClientCode":"C00040","NodeId":176414,"Location":null},{"Name":"Acme Insurance Broking Services (P) Ltd","ClientCode":"CA0340","NodeId":184916,"Location":null},{"Name":"Adams Hackett \u0026amp; Brown","ClientCode":"CD0065","NodeId":207827,"Location":null},{"Name":"Aditya Birla Insurance Brokers Ltd","ClientCode":"CA1057","NodeId":186262,"Location":null},{"Name":"AIS Insurance Brokers PTY Ltd","ClientCode":"CAA007","NodeId":185259,"Location":null},{"Name":"AML Insurance Brokers","ClientCode":"CAA018","NodeId":187068,"Location":null}]

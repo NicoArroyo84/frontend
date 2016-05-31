@@ -21,9 +21,9 @@
 
 
     function GetAllowedOperations() {
-      $.loadingLayerTIW();
+      angular.element.loadingLayerTIW();
       userService.GetAllowedOperations(localStorage.getItem("organisation_name")).then(function (res) {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
         vm.userPermissions = res.data;
         userService.IsUserAllowedPermission = vm.userPermissions.IsUserAllowed  && $state.params.organisation;
         if (!userService.IsUserAllowedPermission) {
@@ -31,8 +31,9 @@
           vm.IsUserAllowed = false;
         }
 
-      }, function (res) {
-        $.loadingLayerTIW();
+      }, function () {
+        angular.element.loadingLayerTIW();
+        //to do error handling
       });
     }
 

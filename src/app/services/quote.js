@@ -27,7 +27,7 @@
             SearchQuote: function (organisation, queryString, includeArchived, numberOfResults) {
 
                 //return $http.post("../../Quote/SearchQuote", { organisation: organisation, queryString: queryString, includeArchived: includeArchived, numberOfResults: numberOfResults });
-                return $http.get("app/json/search_quotes.json");
+                return $http.get("app/json/search_quote.json");
             },
             QuoteToNTU: function (quoteNodeId, organisation, idReason) {
                 return $http.post("../../Quote/ArchiveQuote", { quoteNodeId: quoteNodeId, organisation: organisation, idReason: idReason });

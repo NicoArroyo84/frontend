@@ -50,18 +50,18 @@
 
 
         function IsUserAllowed() {
-            $.loadingLayerTIW();
+            angular.element.loadingLayerTIW();
             userService.IsUserAllowed($state.params.organisation, "CreateUMR").then(function (res) {
                 userService.IsUserAllowedPermission = res.data;
                 if (res.data) {
                     GetDepartmentCodes();
                 } else {
-                    $.loadingLayerTIW();
+                    angular.element.loadingLayerTIW();
                     $state.go("main");
                 }
 
             }, function (res) {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
                 $state.go("main");
             });
         }
@@ -142,14 +142,14 @@
                 return false;
             }
 
-            $.loadingLayerTIW();
+            angular.element.loadingLayerTIW();
             umrService.ValidateUMR(vm.organisation_name, vm.broker_code + vm.umr_text).then(function (res) {
                 if (res.data && res.data.IsValid) {
                     ProceedUMRCreation();
 
                 } else if (res.data && res.data.FailReason) {
 
-                    $.loadingLayerTIW();
+                    angular.element.loadingLayerTIW();
                     $.modalTIW({
                         headerText: "Warning",
                         bodyText: $("<div>" + res.data.FailReason + "</div>"),
@@ -169,7 +169,7 @@
                 }
 
             }, function () {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
             });
         }
 
@@ -193,7 +193,7 @@
                     vm.policy_ref, vm.from_quote, idQuoteNode, vm.risk_year, vm.insurance_name, vm.dep_code, vm.class_buss,
                     vm.lineslip, vm.binding_authority, vm.open_market).then(function (res) {
 
-                        $.loadingLayerTIW();
+                        angular.element.loadingLayerTIW();
                         if (res.data) {
                             if (res.data == -1) {
                                 $.modalTIW({
@@ -243,10 +243,10 @@
                         }
 
                     }, function () {
-                        $.loadingLayerTIW();
+                        angular.element.loadingLayerTIW();
                     });
             } else {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
                 $.modalTIW({
                     headerText: "Warning",
                     bodyText: $("<div>Please complete mandatory fields.</div>"),
@@ -319,10 +319,10 @@
                 return false;
             }
 
-            $.loadingLayerTIW();
+            angular.element.loadingLayerTIW();
             clientsService.GetClientDetails(localStorage.getItem("organisation_name"), angular.element("#client_name").attr("idelement")).then(function (client) {
                 var str = "<div>";
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
 
                 if (client.data) {
                     angular.forEach(client.data, function (val, i) {
@@ -360,7 +360,7 @@
                 $(".accordion-body").empty().append(str);
 
             }, function () {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
 
             });
         }
@@ -372,7 +372,7 @@
                 }
                 GetClassOfBussiness();
             }, function () {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
             });
         }
 
@@ -384,14 +384,14 @@
                 }
 
             }, function () {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
             });
         }
 
 
         function GetBrokerCodes() {
             umrService.GetBrokerCode(localStorage.getItem("organisation_name")).then(function (codes) {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
                 if (codes.data) {
                     vm.broker_code_list = codes.data;
 
@@ -405,7 +405,7 @@
                 }
 
             }, function () {
-                $.loadingLayerTIW();
+                angular.element.loadingLayerTIW();
             });
         }
 

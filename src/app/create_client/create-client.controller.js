@@ -17,32 +17,36 @@
     vm.Cancel = Cancel;
     vm.Finish = Finish;
 
-    vm.test = function () {
-      $uibModal.open({
-        animation: true,
-        templateUrl: 'scripts/directives/modal/modal.html',
-        controller: 'ModalInstanceController',
-        controllerAs: 'modal'
+    vm.OrganisationTypeList = [];
+    vm.costumColumns = [{ "name": "col1", "template": "<a ng-click='types.EditOrganisationType(dat.Type, dat.IdOrganisationType)'>Edit</a>" }, { "name": "col2", "template": "<a ng-class='{\"disabled\":dat.InUse}' ng-click='types.DeleteOrganisationType(dat.IdOrganisationType,dat.InUse)'>Delete</a>" }];
+    getOrganisationTypes();
 
+    function getOrganisationTypes() {
+
+      clientsService.getOrganisationTypes().then(function (orgs) {
+        if (orgs) {
+          vm.OrganisationTypeList = orgs.data;
+          vm.NotPublishedPages = Math.ceil(orgs.length / vm.DocsPerPage);
+        }
+      }, function () {
       });
     }
-
 
     IsUserAllowed();
 
     function IsUserAllowed() {
-      $.loadingLayerTIW();
+      angular.element.loadingLayerTIW();
       userService.IsUserAllowed($state.params.organisation, "CreateClient").then(function (res) {
         userService.IsUserAllowedPermission = res.data;
         if (res.data) {
           GetClientGroup();
         } else {
-          $.loadingLayerTIW();
+          angular.element.loadingLayerTIW();
           $state.go("main");
         }
 
       }, function (res) {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
         $state.go("main");
       });
     }
@@ -51,12 +55,12 @@
     function GetClientGroup() {
 
       clientsService.GetClientGroup(localStorage.getItem("organisation_name")).then(function (list) {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
         if (list && list.data) {
           vm.clients_list = list.data;
         }
       }, function () {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
       });
     }
 
@@ -66,11 +70,11 @@
         return false;
       }
 
-      $.loadingLayerTIW();
+      angular.element.loadingLayerTIW();
 
       clientsService.CheckAccCode(localStorage.getItem("organisation_name"), client_code).then(function (res) {
         vm.accCodeValid = true;
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
         if (res.data && res.data.FailReason && res.data.DuplicateClientFolderUrl) {
           vm.accCodeValid = false;
           $.modalTIW({
@@ -92,7 +96,7 @@
 
 
       }, function () {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
       });
     }
 
@@ -141,13 +145,13 @@
 
     function CheckAccCodeAndFinish() {
 
-      $.loadingLayerTIW();
+      angular.element.loadingLayerTIW();
 
       clientsService.CheckAccCode(localStorage.getItem("organisation_name"), vm.client_code).then(function (res) {
         if (res.data && res.data.IsValid) {
           CreateClientFolder();
         } else {
-          $.loadingLayerTIW();
+          angular.element.loadingLayerTIW();
           if (res && res.data.FailReason && res.data.DuplicateClientFolderUrl) {
             $.modalTIW({
               headerText: "Warning",
@@ -170,13 +174,13 @@
 
 
       }, function () {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
       });
     }
 
     function CreateClientFolder() {
       clientsService.CreateClientFolder(localStorage.getItem("organisation_name"), vm.client_name, vm.client_code, vm.client_group, vm.location).then(function (res) {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
         if (res.data) {
 
           if (res.data == -1) {
@@ -225,7 +229,7 @@
         }
 
       }, function () {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
       })
     }
 

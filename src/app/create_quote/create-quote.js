@@ -20,18 +20,18 @@
 
 
       function IsUserAllowed() {
-          $.loadingLayerTIW();
+          angular.element.loadingLayerTIW();
           userService.IsUserAllowed($state.params.organisation, "CreateQuote").then(function (res) {
               userService.IsUserAllowedPermission = res.data;
               if (res.data) {
                   GetNTUReasons();
               } else {
-                  $.loadingLayerTIW();
+                  angular.element.loadingLayerTIW();
                   $state.go("main")
               }
 
           }, function (res) {
-              $.loadingLayerTIW();
+              angular.element.loadingLayerTIW();
               $state.go("main")
           });
       }
@@ -54,14 +54,14 @@
 
       function GetNTUReasons() {
           quoteService.GetNTUReason(localStorage.getItem("organisation_name")).then(function (reasons) {
-              $.loadingLayerTIW();
+              angular.element.loadingLayerTIW();
               if (reasons.data) {
                   vm.ntu_reasons = reasons.data;
               }
 
           },
           function () {
-              $.loadingLayerTIW();
+              angular.element.loadingLayerTIW();
           });
       }
 
@@ -109,9 +109,9 @@
               return false;
           }
 
-          $.loadingLayerTIW();
+          angular.element.loadingLayerTIW();
           quoteService.IsQuoteReferenceUnique(localStorage.getItem("organisation_name"),  vm.quote_reference).then(function (res) {
-              $.loadingLayerTIW();
+              angular.element.loadingLayerTIW();
               if (res) {
                   CreateQuote();
 
@@ -136,7 +136,7 @@
               }
 
           }, function () {
-              $.loadingLayerTIW();
+              angular.element.loadingLayerTIW();
           });
 
       }
@@ -148,12 +148,12 @@
 
 
       function CreateQuote() {
-          $.loadingLayerTIW();
+          angular.element.loadingLayerTIW();
           if (vm.archived) {
 
               quoteService.CreateQuoteResponseAndArchive(localStorage.getItem("organisation_name"), vm.quote_reference, vm.quote_name, vm.archive_reason).then(function (response) {
                   var res = response.data;
-                  $.loadingLayerTIW();
+                  angular.element.loadingLayerTIW();
                   if (res && res.OperationSuccess) {
                       CreationSuccess(res.QuoteNodeId);
                   } else {
@@ -162,14 +162,14 @@
                       }
                   }
               }, function () {
-                  $.loadingLayerTIW();
+                  angular.element.loadingLayerTIW();
                   CreationFailed("An error occurred.");
               });
 
           } else {
               quoteService.CreateQuoteResponse(localStorage.getItem("organisation_name"), vm.quote_reference, vm.quote_name).then(function (response) {
                   var res = response.data;
-                  $.loadingLayerTIW();
+                  angular.element.loadingLayerTIW();
                   if (res && res.OperationSuccess) {
                       CreationSuccess(res.QuoteNodeId);
                   } else {
@@ -178,7 +178,7 @@
                       }
                   }
               }, function () {
-                  $.loadingLayerTIW();
+                  angular.element.loadingLayerTIW();
                   CreationFailed("An error occurred.");
               });
           }

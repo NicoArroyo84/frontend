@@ -22,18 +22,18 @@
 
 
     function IsUserAllowed() {
-      $.loadingLayerTIW();
+      angular.element.loadingLayerTIW();
       userService.IsUserAllowed($state.params.organisation, "CreateQuote").then(function (res) {
         userService.IsUserAllowedPermission = res.data;
         if (res.data) {
           GetNTUReasons();
         } else {
-          $.loadingLayerTIW();
+          angular.element.loadingLayerTIW();
           $state.go("main");
         }
 
       }, function (res) {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
         $state.go("main");
       });
     }
@@ -42,14 +42,14 @@
 
     function GetNTUReasons() {
       quoteService.GetNTUReason(localStorage.getItem("organisation_name")).then(function (reasons) {
-          $.loadingLayerTIW();
+          angular.element.loadingLayerTIW();
           if (reasons.data) {
             vm.ntu_reasons = reasons.data;
           }
 
         },
         function () {
-          $.loadingLayerTIW();
+          angular.element.loadingLayerTIW();
         });
     }
 
@@ -86,10 +86,10 @@
         });
         return false;
       }
-      $.loadingLayerTIW();
+      angular.element.loadingLayerTIW();
       quoteService.QuoteToNTU($("#quote_reference").attr("idelement"), localStorage.getItem("organisation_name"), vm.archive_reason).then(function (res) {
 
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
         if (res & res.data) {
 
           CreationSuccess($("#quote_reference").attr("idelement"));
@@ -97,7 +97,7 @@
           CreationFailed("error to be expecified");
         }
       }, function () {
-        $.loadingLayerTIW();
+        angular.element.loadingLayerTIW();
       });
 
     }
