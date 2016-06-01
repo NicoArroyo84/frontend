@@ -52,7 +52,7 @@
                     $state.go("main")
                 }
 
-            }, function (res) {
+            }, function () {
                 angular.element.loadingLayerTIW();
                 $state.go("main")
             });
@@ -65,7 +65,7 @@
                 if (codes.data) {
                     vm.broker_code_list = codes.data;
 
-                    var main = vm.broker_code_list.filter(function (val, i) {
+                    var main = vm.broker_code_list.filter(function (val) {
                         return val.MainBrokerCode;
                     });
 
@@ -85,7 +85,7 @@
 
                  vm.UmrList = [];
 
-                 angular.forEach(data.data, function (val, i) {
+                 angular.forEach(data.data, function (val) {
                      vm.UmrList.push({ "label": val.FolderName, "value": val.FolderNodeId });
                  });
 
@@ -112,14 +112,14 @@
                         if (res.data && res.data.FailReason) {
 
 
-                            $.modalTIW({
+                            angular.element.modalTIW({
                                 headerText: "Warning",
-                                bodyText: $("<div>" + res.data.FailReason + "</div>"),
+                                bodyText: angular.element("<div>" + res.data.FailReason + "</div>"),
                                 style: "tiw",
                                 acceptButton: {
                                     text: "OK",
                                     action: function () {
-                                        $(".modal-footer .btn-default").click();
+                                        angular.element(".modal-footer .btn-default").click();
                                     }
 
                                 },
@@ -171,14 +171,14 @@
 
                 ValidateUMR(true);
             } else {
-                $.modalTIW({
+                angular.element.modalTIW({
                     headerText: "Warning",
-                    bodyText: $("<div>Please complete mandatory fields.</div>"),
+                    bodyText: angular.element("<div>Please complete mandatory fields.</div>"),
                     style: "tiw",
                     acceptButton: {
                         text: "OK",
                         action: function () {
-                            $(".modal-footer .btn-default").click();
+                            angular.element(".modal-footer .btn-default").click();
                         }
 
                     },
@@ -195,14 +195,14 @@
                 var res = response.data;
                 angular.element.loadingLayerTIW();
                 if (res == -1) {
-                    $.modalTIW({
+                    angular.element.modalTIW({
                         headerText: "",
-                        bodyText: $("<div>Unable to create ucr. Please contact helpdesk.</div>"),
+                        bodyText: angular.element("<div>Unable to create ucr. Please contact helpdesk.</div>"),
                         style: "tiw",
                         acceptButton: {
                             text: "OK",
                             action: function () {
-                                $(".modal-footer .btn-default").click();
+                                angular.element(".modal-footer .btn-default").click();
                                 $state.go("main")
                                 $scope.$apply();
                             }
@@ -218,14 +218,14 @@
                 }
 
 
-                $.modalTIW({
+                angular.element.modalTIW({
                     headerText: "",
-                    bodyText: $("<div>Ucr created successfully with the id : " + res + "</div>"),
+                    bodyText: angular.element("<div>Ucr created successfully with the id : " + res + "</div>"),
                     style: "tiw",
                     acceptButton: {
                         text: "OK",
                         action: function () {
-                            $(".modal-footer .btn-default").click();
+                            angular.element(".modal-footer .btn-default").click();
                             $state.go("main")
                             $scope.$apply();
                         }

@@ -4,6 +4,7 @@
     'use strict';
 
 
+
     angular
        .module('triremeApp')
        .controller('CreateQuoteController', CreateQuoteController);
@@ -13,11 +14,9 @@
       vm.Cancel = Cancel;
       vm.Finish = Finish;
       vm.UpdateAutocomplete = UpdateAutocomplete;
-
-
-
+      angular.element("#quote_reference").ForceStrictAlphaNumerics();
+      angular.element("#quote_name").ForceStrictAlphaNumerics(true);
       IsUserAllowed();
-
 
       function IsUserAllowed() {
           angular.element.loadingLayerTIW();
@@ -30,7 +29,7 @@
                   $state.go("main")
               }
 
-          }, function (res) {
+          }, function () {
               angular.element.loadingLayerTIW();
               $state.go("main")
           });
@@ -42,7 +41,7 @@
           .then(function (data) {
               vm.quotesList = [];
 
-              angular.forEach(data, function (val, i) {
+              angular.forEach(data, function (val) {
                   vm.quotesList.push({ "label": val.QuoteValue, "value": val.QuoteNodeId });
               });
 
@@ -68,14 +67,14 @@
       function Finish() {
 
           if (!((vm.quote_name) && (vm.quote_reference))) {
-              $.modalTIW({
+              angular.element.modalTIW({
                   headerText: "Warning",
-                  bodyText: $("<div>Please complete all required fields.</div>"),
+                  bodyText: angular.element("<div>Please complete all required fields.</div>"),
                   style: "tiw",
                   acceptButton: {
                       text: "OK",
                       action: function () {
-                          $(".modal-footer .btn-default").click();
+                          angular.element(".modal-footer .btn-default").click();
                       }
 
                   },
@@ -90,14 +89,14 @@
 
 
           if (vm.archived && (!vm.archive_reason)) {
-              $.modalTIW({
+              angular.element.modalTIW({
                   headerText: "Warning",
-                  bodyText: $("<div>Please complete all required fields.</div>"),
+                  bodyText: angular.element("<div>Please complete all required fields.</div>"),
                   style: "tiw",
                   acceptButton: {
                       text: "OK",
                       action: function () {
-                          $(".modal-footer .btn-default").click();
+                          angular.element(".modal-footer .btn-default").click();
                       }
 
                   },
@@ -117,14 +116,14 @@
 
 
               } else {
-                  $.modalTIW({
+                  angular.element.modalTIW({
                       headerText: "Warning",
-                      bodyText: $("<div>Quote reference already exists for that quote name.</div>"),
+                      bodyText: angular.element("<div>Quote reference already exists for that quote name.</div>"),
                       style: "tiw",
                       acceptButton: {
                           text: "OK",
                           action: function () {
-                              $(".modal-footer .btn-default").click();
+                              angular.element(".modal-footer .btn-default").click();
                           }
 
                       },
@@ -185,14 +184,14 @@
       }
 
       function CreationFailed(reason) {
-          $.modalTIW({
+          angular.element.modalTIW({
               headerText: "Warning",
-              bodyText: $("<div>" + reason + "</div>"),
+              bodyText: angular.element("<div>" + reason + "</div>"),
               style: "tiw",
               acceptButton: {
                   text: "OK",
                   action: function () {
-                      $(".modal-footer .btn-default").click();
+                      angular.element(".modal-footer .btn-default").click();
                   }
 
               },
@@ -204,14 +203,14 @@
       }
 
       function CreationSuccess(nodeId){
-          $.modalTIW({
+          angular.element.modalTIW({
               headerText: "",
-              bodyText: $("<div>Quote created successfully with the id " + nodeId + "</div>"),
+              bodyText: angular.element("<div>Quote created successfully with the id " + nodeId + "</div>"),
               style: "tiw",
               acceptButton: {
                   text: "OK",
                   action: function () {
-                      $(".modal-footer .btn-default").click();
+                      angular.element(".modal-footer .btn-default").click();
                       $state.go("main")
                       $scope.$apply();
                   }

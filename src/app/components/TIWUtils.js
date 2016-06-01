@@ -1,7 +1,4 @@
-﻿"use strict";
-
-
-
+﻿/* eslint-disable */
 /* ==============================================================================================================
    Author:		Nicolas Arroyo
    Create date: 03-03-2014
@@ -9,24 +6,26 @@
    ============================================================================================================== */
 
 
-(function ($, window, document) {
-    $.loadingLayerTIW = function (opts) {
-        var options = $.extend({}, $.loadingLayerTIW.defaults, opts);
-        $("body").css("overflow", "auto")
+(function () {
+
+  "use strict";
+    angular.element.loadingLayerTIW = function (opts) {
+        var options = angular.element.extend({}, angular.element.loadingLayerTIW.defaults, opts);
+        angular.element("body").css("overflow", "auto")
                  .unbind("touchmove");
-        if ($("#loadingLayerTIW").length) {
-            $("#loadingLayerTIW").remove();
+        if (angular.element("#loadingLayerTIW").length) {
+            angular.element("#loadingLayerTIW").remove();
             return false;
         }
         if (options.close) {
             return false;
         }
 
-        $("body").css("overflow", "hidden");
-        $('body').bind('touchmove', false);
+        angular.element("body").css("overflow", "hidden");
+        angular.element('body').bind('touchmove', false);
 
-        var $container = $(document),
-            $div = $("<div id='loadingLayerTIW'><span><img src='images/ajax-loader.gif'></span></div>"),
+        var $container = angular.element(document),
+            $div = angular.element("<div id='loadingLayerTIW'><span><img src='images/ajax-loader.gif'></span></div>"),
             $img = $div.find("img"),
             scrollBarWidth = 12;
         if (options.container == null) {
@@ -40,11 +39,11 @@
                 zIndex: 1040
             }).find("span").css({
                 position: "fixed",
-                top:0 
-            }).end().appendTo($("body"));
+                top:0
+            }).end().appendTo(angular.element("body"));
             $div.find("span").css({
-                marginLeft: $(window).width() / 2 - ($img.width() / 2),
-                marginTop: $(window).height() / 2 - ($img.height() / 2)
+                marginLeft: angular.element(window).width() / 2 - ($img.width() / 2),
+                marginTop: angular.element(window).height() / 2 - ($img.height() / 2)
             });
         } else {
             $container = options.container;
@@ -72,12 +71,12 @@
 
     }
 
-    $.loadingLayerTIW.defaults = {
+    angular.element.loadingLayerTIW.defaults = {
         close : false, // force to close the layer, so prevent to open a layer if not wished
         container : null
     }
 
-}(window.jQuery, window, document));
+}());
 
 
 /* ==============================================================================================================
@@ -90,7 +89,7 @@
 
 
 function isStrictNumeric(str) {
-    return ($.isNumeric(str) && (str.indexOf(".") === -1) && (str.indexOf(" ") === -1));
+    return (angular.element.isNumeric(str) && (str.indexOf(".") === -1) && (str.indexOf(" ") === -1));
 }
 
 
@@ -116,10 +115,10 @@ function isStrictAlphaNumeric(str) {
 jQuery.fn.ForceNaturalNumbers = function () {
     return this.each(function () {
 
-        $(this).on("change",function() {
+        angular.element(this).on("change",function() {
 
-            if ($.isNumeric($(this).val())) {
-                if (parseInt($(this).val()) < 0) { $(this).val(parseInt($(this).val()) + 1); }
+            if (angular.element.isNumeric(angular.element(this).val())) {
+                if (parseInt(angular.element(this).val()) < 0) { angular.element(this).val(parseInt(angular.element(this).val()) + 1); }
             }
         });
 
@@ -131,7 +130,7 @@ jQuery.fn.ForceStrictNumerics = function () {
 
     return this.each(function () {
 
-        $(this).keypress(function (e) {
+        angular.element(this).keypress(function (e) {
 
             var key = e.charCode || e.keyCode || 0;
 
@@ -144,9 +143,9 @@ jQuery.fn.ForceStrictNumerics = function () {
         });
 
 
-        $(this).on("paste", function () {
-            var $input = $(this),
-                aux = $(this).val();
+        angular.element(this).on("paste", function () {
+            var $input = angular.element(this),
+                aux = angular.element(this).val();
 
             setTimeout(function () {
                 if (!isStrictNumeric($input.val())) {
@@ -164,7 +163,7 @@ jQuery.fn.ForceStrictAlphaNumerics = function (allowSpace) {
 
     return this.each(function () {
 
-        $(this).keypress(function (e) {
+        angular.element(this).keypress(function (e) {
 
             var key = e.charCode || e.keyCode || 0;
 
@@ -181,9 +180,9 @@ jQuery.fn.ForceStrictAlphaNumerics = function (allowSpace) {
         });
 
 
-        $(this).on("paste", function () {
-            var $input = $(this),
-                aux = $(this).val();
+        angular.element(this).on("paste", function () {
+            var $input = angular.element(this),
+                aux = angular.element(this).val();
 
             setTimeout(function () {
                 if (!isStrictAlphaNumeric($input.val())) {
@@ -200,7 +199,7 @@ jQuery.fn.ForceStrictAlpha = function (allowSpace) {
 
     return this.each(function () {
 
-        $(this).keypress(function (e) {
+        angular.element(this).keypress(function (e) {
 
             var key = e.charCode || e.keyCode || 0;
 
@@ -216,9 +215,9 @@ jQuery.fn.ForceStrictAlpha = function (allowSpace) {
         });
 
 
-        $(this).on("paste", function () {
-            var $input = $(this),
-                aux = $(this).val();
+        angular.element(this).on("paste", function () {
+            var $input = angular.element(this),
+                aux = angular.element(this).val();
 
             setTimeout(function () {
                 if (!isStrictAlphaNumeric($input.val())) {
@@ -239,13 +238,13 @@ jQuery.fn.ForceNumerics = function (decimal) {
 
     return this.each(function () {
 
-        $(this).blur(function () {
+        angular.element(this).blur(function () {
             if (this.value[this.value.length - 1] === ".") {
                 this.value = this.value.replace(".", "");
             }
         });
 
-        $(this).keydown(function (e) {
+        angular.element(this).keydown(function (e) {
             var key = e.charCode || e.keyCode || 0;
             // allow backspace, tab, delete, arrows, numbers and keypad numbers ONLY
             // home, end, period, and numpad decimal
@@ -265,7 +264,7 @@ jQuery.fn.ForceNumerics = function (decimal) {
 };
 
 
-//Capitalizes first letter 
+//Capitalizes first letter
 if (typeof String.prototype.capitalize == undefined) {
     String.prototype.capitalize = function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
@@ -279,7 +278,7 @@ function validateEmail(email) {
 }
 
 
-//Detect version of browser 
+//Detect version of browser
 navigator.sayswho = function () {
     var ua = navigator.userAgent, tem,
     M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*([\d\.]+)/i) || [];

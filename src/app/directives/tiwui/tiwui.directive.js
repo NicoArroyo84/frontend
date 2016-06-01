@@ -82,22 +82,27 @@ angular.module('tiwUI.autocomplete', [])
 
   angular.module('tiwUI.table',[]);
 
-  angular.module('tiwUI.table').directive('bindHtmlCompile', ['$compile', function ($compile) {
+  angular.module('tiwUI.table').directive('bindHtmlCompile', function ($compile) {
     return {
       restrict: 'A',
       link: function (scope, element, attrs) {
         scope.$watch(function () {
-          if (typeof scope.$eval(attrs.bindHtmlCompile).$$unwrapTrustedValue == "function")
             return scope.$eval(attrs.bindHtmlCompile);
         }, function (value) {
-          if (value && (typeof value.$$unwrapTrustedValue == "function")) {
-            element.html(value.$$unwrapTrustedValue());
-            $compile(element.contents())(scope);
+          // In case value is a TrustedValueHolderType, sometimes it
+          // needs to be explicitly called into a string in order to
+          // get the HTML string.
+          element.html(value && value.toString());
+          // If scope is provided use it, otherwise use parent scope
+          var compileScope = scope;
+          if (attrs.bindHtmlScope) {
+            compileScope = scope.$eval(attrs.bindHtmlScope);
           }
+          $compile(element.contents())(compileScope);
         });
       }
     };
-  }]);
+  });
 
 
 
@@ -106,7 +111,7 @@ angular.module('tiwUI.autocomplete', [])
     .directive('tiwTable', tiwTable);
 
 
-  function tiwTable($compile, $sce){
+  function tiwTable($sce){
     return {
       template: ['<div class="table-container">',
         '<table class="table table-bordered table-striped">',
@@ -117,8 +122,6 @@ angular.module('tiwUI.autocomplete', [])
         '</thead>',
         '<tr  ng-show="($index < (currentPage*docsPerPage)) && ($index >= (currentPage*docsPerPage - docsPerPage)) " ng-repeat="dat in rows | orderBy:predicate:reverse">', // "
         '<td bind-html-compile="dat[col]"  ng-repeat="col in columns" class="table-name-column">{{dat[col]}}</td>', //ng-bind-html allow to insert html content. {{dat[col]}} is the key that allows to get the columns order in regards the array columns provided
-        //'<td bind-html-compile="cell" ng-show="columns.indexOf(key) >= 0"  ng-repeat="(key,cell) in dat" class="table-name-column">{{cell}}</td>', //ng-bind-html allow to insert html content
-
         '</tr>',
         '</table>',
         '</div>',
@@ -149,33 +152,27 @@ angular.module('tiwUI.autocomplete', [])
         '</div>'].join(""),
       restrict: 'A',
       link: link
-    }
+    };
 
-    function link(scope, element, attrs, $compile) {
+    function link(scope, element, attrs) {
       //this will allow to get the reference to the parent model, it can be provided via an "controller as syntax" such as CtrlMain as main --> main.data, or without the "as syntax" CtrlMain --> data
       var ctrlData = attrs.data;
-      var firstRun = false;
 
       //if the data is provided in the page bootstrapping this will construct the table
-      scope.$watch(function (attrs) {
+      scope.$watch(function () {
           return scope.$eval(ctrlData);
+      },function (data) {
+        if (data) {
+          ShowTable(data);
         }
-        ,
-        function (data) {
-
-          console.log("watch data");
-          if (data) {
-            ShowTable(data);
-          }
-        }, true
-      );
+      }, true );
 
       function ShowTable(data) {
+
         scope.header = [];
-
         scope.rows = data;
-
         scope.predicateList = [];
+
         if (!scope.currentPage) {
           scope.currentPage = 1;
         } else {
@@ -194,12 +191,12 @@ angular.module('tiwUI.autocomplete', [])
           if (n)
             return new Array(n);
         };
+
         scope.ChangePage = function (n) {
           scope.currentPage = n;
         };
 
         scope.order = function (predicate) {
-
           if (!scope.costumColumnsName[predicate].length) {
             return false;
           }
@@ -208,13 +205,12 @@ angular.module('tiwUI.autocomplete', [])
             scope.predicateList.push(predicate);
 
           }
-          angular.forEach(scope.predicateList, function (val, i) {
+          angular.forEach(scope.predicateList, function (val) {
             scope[val + "SortingInverted"] = false;
             scope[val + "Sorting"] = false;
           });
           scope.reverse = (scope.predicate === predicate) ? !scope.reverse : false;
           scope.predicate = predicate;
-
 
           if (scope.reverse) {
             scope[predicate + "Sorting"] = true;
@@ -242,13 +238,11 @@ angular.module('tiwUI.autocomplete', [])
           });
         }
 
-
-        var tempT = "";
         if (attrs.costumColumns && attrs.costumColumns.length) {
-          angular.forEach(angular.fromJson(attrs.costumColumns), function (val, i) {
+          angular.forEach(angular.fromJson(attrs.costumColumns), function (val) {
             scope.header.push(val.name);
 
-            angular.forEach(scope.rows, function (val1, i1) {
+            angular.forEach(scope.rows, function (val1) {
 
               val1[val.name] = $sce.trustAsHtml(val.template);
             });
@@ -268,7 +262,7 @@ angular.module('tiwUI.autocomplete', [])
         }
 
         scope.columns = attrs.columns.split(",");
-        scope.header = scope.columns.concat(scope.header.filter(function (val, i) {
+        scope.header = scope.columns.concat(scope.header.filter(function (val) {
           return scope.columns.indexOf(val) < 0;
         }));
 
@@ -276,14 +270,8 @@ angular.module('tiwUI.autocomplete', [])
 
 
       }
-
-
     }
-
-
   }
 
 
-
-
-  })();
+})();

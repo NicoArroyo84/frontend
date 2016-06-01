@@ -40,10 +40,10 @@
                 <div class="form-group">
                     <div class="col-sm-7"></div>
                     <div class="col-sm-2">
-                        <button ng-click="quote.Cancel()" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
+                        <button type="button" ng-click="quote.Cancel()" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
                     </div>
                     <div class="col-sm-2">
-                        <button ng-disabled="archiveForm.$invalid || !quote.quoteValid" ng-click="quote.Finish()" class="btn btn-tiw-green btn-primary btn-block">Finish</button>
+                        <button type="button" ng-disabled="archiveForm.$invalid || !quote.quoteValid" ng-click="quote.Finish()" class="btn btn-tiw-green btn-primary btn-block">Finish</button>
                     </div>
                 </div>
             </div>
@@ -51,17 +51,3 @@
     </div>
 </div>
 
-<script>
-          //to avoid to use enter on text input and get back to the previous page as the cancel button always comes first
-          $(document).ready(function () {
-              $("#quote_reference").ForceStrictAlphaNumerics();
-              angular.element("input:text").on("keypress", function (e) {
-                  if (e.keyCode == 13) {
-                      e.preventDefault();
-                  }
-
-              })
-
-          })
-
-</script>

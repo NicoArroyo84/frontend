@@ -1,5 +1,3 @@
-
-
 (function () {
 
     'use strict';
@@ -60,7 +58,7 @@
                     $state.go("main");
                 }
 
-            }, function (res) {
+            }, function () {
                 angular.element.loadingLayerTIW();
                 $state.go("main");
             });
@@ -101,21 +99,23 @@
         //angular.element("#accordion").collapse('hide');
         function UpdateClientDetails() {
             if (!angular.element("#client_name").data('ui-autocomplete')) {
-                return false;
+                return;
             }
 
             vm.umrValid = false;
             if (angular.element("#client_name").autocomplete("option", "source")) {
 
-                var hasData = angular.element("#client_name").autocomplete("option", "source").filter(function (val, i) { return val.label == angular.element("#client_name").val() });
+                var hasData = angular.element("#client_name")
+                  .autocomplete("option", "source")
+                  .filter(function (val) { return val.label == angular.element("#client_name").val() });
+
                 if (hasData && hasData.length) {
                     //angular.element("#accordion").collapse('show');
                     vm.umrValid = true;
                     GetClientDetails();
 
                 } else {
-                    $(".accordion-body").empty();
-
+                    angular.element(".accordion-body").empty();
                 }
             }
 
@@ -123,14 +123,14 @@
 
         function CreateUMR() {
             if (!(vm.broker_code && vm.umr_text)) {
-                $.modalTIW({
+                angular.element.modalTIW({
                     headerText: "Warning",
-                    bodyText: $("<div>Please complete mandatory fields.</div>"),
+                    bodyText: angular.element("<div>Please complete mandatory fields.</div>"),
                     style: "tiw",
                     acceptButton: {
                         text: "OK",
                         action: function () {
-                            $(".modal-footer .btn-default").click();
+                            angular.element(".modal-footer .btn-default").click();
                         }
 
                     },
@@ -139,7 +139,7 @@
                         text: "No"
                     }
                 });
-                return false;
+                return;
             }
 
             angular.element.loadingLayerTIW();
@@ -150,16 +150,15 @@
                 } else if (res.data && res.data.FailReason) {
 
                     angular.element.loadingLayerTIW();
-                    $.modalTIW({
+                    angular.element.modalTIW({
                         headerText: "Warning",
-                        bodyText: $("<div>" + res.data.FailReason + "</div>"),
+                        bodyText: angular.element("<div>" + res.data.FailReason + "</div>"),
                         style: "tiw",
                         acceptButton: {
                             text: "OK",
                             action: function () {
-                                $(".modal-footer .btn-default").click();
+                                angular.element(".modal-footer .btn-default").click();
                             }
-
                         },
                         closeButton: {
                             visible: false,
@@ -181,11 +180,10 @@
         function ProceedUMRCreation() {
             if (CheckMandatoryFields()) {
 
-                var quote_reference = "", idQuoteNode = 0;
+                var idQuoteNode = 0;
+
+
                 if (angular.element("#quote_reference").attr("idelement")) {
-                    quote_reference = angular.element("#quote_reference").attr("idelement");
-                }
-                if (!!angular.element("#quote_reference").attr("idelement")) {
                     idQuoteNode = angular.element("#quote_reference").attr("idelement");
                 }
 
@@ -196,15 +194,15 @@
                         angular.element.loadingLayerTIW();
                         if (res.data) {
                             if (res.data == -1) {
-                                $.modalTIW({
+                                angular.element.modalTIW({
                                     headerText: "",
-                                    bodyText: $("<div>Unable to create umr. Please contact helpdesk.</div>"),
+                                    bodyText: angular.element("<div>Unable to create umr. Please contact helpdesk.</div>"),
                                     style: "tiw",
                                     acceptButton: {
                                         text: "OK",
                                         action: function () {
-                                            $(".modal-footer .btn-default").click();
-                                            $state.go("main")
+                                            angular.element(".modal-footer .btn-default").click();
+                                            $state.go("main");
                                             $scope.$apply();
                                         }
 
@@ -219,15 +217,15 @@
                             }
 
 
-                            $.modalTIW({
+                            angular.element.modalTIW({
                                 headerText: "",
-                                bodyText: $("<div>Umr created successfully with the id : " + res.data + "</div>"),
+                                bodyText: angular.element("<div>Umr created successfully with the id : " + res.data + "</div>"),
                                 style: "tiw",
                                 acceptButton: {
                                     text: "OK",
                                     action: function () {
-                                        $(".modal-footer .btn-default").click();
-                                        $state.go("main")
+                                        angular.element(".modal-footer .btn-default").click();
+                                        $state.go("main");
                                         $scope.$apply();
                                     }
 
@@ -238,25 +236,21 @@
                                 }
                             });
 
-                        } else {
-
                         }
-
                     }, function () {
                         angular.element.loadingLayerTIW();
                     });
             } else {
                 angular.element.loadingLayerTIW();
-                $.modalTIW({
+                angular.element.modalTIW({
                     headerText: "Warning",
-                    bodyText: $("<div>Please complete mandatory fields.</div>"),
+                    bodyText: angular.element("<div>Please complete mandatory fields.</div>"),
                     style: "tiw",
                     acceptButton: {
                         text: "OK",
                         action: function () {
-                            $(".modal-footer .btn-default").click();
+                            angular.element(".modal-footer .btn-default").click();
                         }
-
                     },
                     closeButton: {
                         visible: false,
@@ -268,7 +262,6 @@
         }
 
         function Cancel() {
-
             $state.go("main", { organisation: localStorage.getItem("organisation_name") });
         }
 
@@ -277,10 +270,9 @@
             .then(function (data) {
                 vm.clientsList = [];
 
-                angular.forEach(data.data, function (val, i) {
+                angular.forEach(data.data, function (val) {
                     vm.clientsList.push({ "label": val.Name, "value": val.NodeId });
                 });
-
             });
         }
 
@@ -288,26 +280,24 @@
             quoteService.SearchQuote(localStorage.getItem("organisation_name"), vm.quote, vm.include_archived, 10)
             .then(function (data) {
                 vm.quotesList = [];
-
-                angular.forEach(data.data, function (val, i) {
+                angular.forEach(data.data, function (val) {
                     vm.quotesList.push({ "label": val.QuoteValue, "value": val.QuoteNodeId });
                 });
-
-
             });
         }
 
         function CheckQuote() {
             if (!angular.element("#quote_reference").data('ui-autocomplete')) {
-                return false;
+                return;
             }
             vm.quoteValid = false;
             if (angular.element("#quote_reference").autocomplete("option", "source")) {
 
-                var hasData = angular.element("#quote_reference").autocomplete("option", "source").filter(function (val, i) { return val.label == angular.element("#quote_reference").val() });
+                var hasData = angular.element("#quote_reference").autocomplete("option", "source")
+                  .filter(function (val) { return val.label == angular.element("#quote_reference").val() });
+
                 if (hasData && hasData.length) {
                     vm.quoteValid = true;
-
                 }
             }
         }
@@ -316,9 +306,8 @@
         function GetClientDetails() {
 
             if (!angular.element("#client_name").attr("idelement")) {
-                return false;
+                return;
             }
-
             angular.element.loadingLayerTIW();
             clientsService.GetClientDetails(localStorage.getItem("organisation_name"), angular.element("#client_name").attr("idelement")).then(function (client) {
                 var str = "<div>";
@@ -335,7 +324,6 @@
                                   "</div>" +
                               "</div>";
                             } else {
-
                                 if (val.Value) {
                                     str += "<div class='form-group'>" +
                                         "<label class='col-xs-3 control-label'>" + val.Label + "</label>" +
@@ -357,7 +345,7 @@
                 }
 
                 str += "</div>";
-                $(".accordion-body").empty().append(str);
+                angular.element(".accordion-body").empty().append(str);
 
             }, function () {
                 angular.element.loadingLayerTIW();
@@ -395,7 +383,7 @@
                 if (codes.data) {
                     vm.broker_code_list = codes.data;
 
-                    var main = codes.data.filter(function (val, i) {
+                    var main = codes.data.filter(function (val) {
                         return val.MainBrokerCode
                     });
 
@@ -414,22 +402,17 @@
 
             if ((vm.broker_code) && (vm.umr_text)) {
                 umrService.ValidateUMR(localStorage.getItem("organisation_name"), vm.broker_code + vm.umr_text).then(function (res) {
-                    if (res && res.IsValid) {
-
-
-
-                    } else {
+                    if (!(res && res.IsValid)) {
                         if (res && res.FailReason) {
-                            $.modalTIW({
+                            angular.element.modalTIW({
                                 headerText: "Warning",
-                                bodyText: $("<div>" + res.FailReason + "</div>"),
+                                bodyText: angular.element("<div>" + res.FailReason + "</div>"),
                                 style: "tiw",
                                 acceptButton: {
                                     text: "OK",
                                     action: function () {
-                                        $(".modal-footer .btn-default").click();
+                                        angular.element(".modal-footer .btn-default").click();
                                     }
-
                                 },
                                 closeButton: {
                                     visible: false,

@@ -8,7 +8,7 @@
     .module('triremeApp')
     .controller('CreateClientController', CreateClientController);
 
-  function CreateClientController($scope, $state, clientsService, userService, $http,$uibModal,$stateParams) {
+  function CreateClientController($scope, $state, clientsService, userService,modalFactory) {
     var vm = this;
     //$stateParams.organisation
     vm.accCodeValid = true;
@@ -18,8 +18,12 @@
     vm.Finish = Finish;
 
     vm.OrganisationTypeList = [];
-    vm.costumColumns = [{ "name": "col1", "template": "<a ng-click='types.EditOrganisationType(dat.Type, dat.IdOrganisationType)'>Edit</a>" }, { "name": "col2", "template": "<a ng-class='{\"disabled\":dat.InUse}' ng-click='types.DeleteOrganisationType(dat.IdOrganisationType,dat.InUse)'>Delete</a>" }];
+    vm.costumColumns = [{ "name": "col1", "template": "<a ng-click='client.hola()'>Edit</a>" }, { "name": "col2", "template": "<a ng-class='{\"disabled\":dat.InUse}' ng-click='types.DeleteOrganisationType(dat.IdOrganisationType,dat.InUse)'>Delete</a>" }];
     getOrganisationTypes();
+    vm.hola = function(){
+      modalFactory.showModal("hola","que tal");
+    }
+
 
     function getOrganisationTypes() {
 
@@ -45,7 +49,7 @@
           $state.go("main");
         }
 
-      }, function (res) {
+      }, function () {
         angular.element.loadingLayerTIW();
         $state.go("main");
       });
@@ -77,14 +81,14 @@
         angular.element.loadingLayerTIW();
         if (res.data && res.data.FailReason && res.data.DuplicateClientFolderUrl) {
           vm.accCodeValid = false;
-          $.modalTIW({
+          angular.element.modalTIW({
             headerText: "Warning",
-            bodyText: $("<div>" + res.data.FailReason + "</div><br><a target='_blank' href='" + res.data.DuplicateClientFolderUrl + "'>Please click here to go to the folder.</a>"),
+            bodyText: angular.element("<div>" + res.data.FailReason + "</div><br><a target='_blank' href='" + res.data.DuplicateClientFolderUrl + "'>Please click here to go to the folder.</a>"),
             style: "tiw",
             acceptButton: {
               text: "OK",
               action: function () {
-                $(".modal-footer .btn-default").click();
+                angular.element(".modal-footer .btn-default").click();
               }
             },
             closeButton: {
@@ -121,14 +125,14 @@
 
     function Finish() {
       if (!(vm.client_group && vm.client_name && vm.client_code)) {
-        $.modalTIW({
+        angular.element.modalTIW({
           headerText: "Warning",
-          bodyText: $("<div>Please complete all mandatory fields.</div>"),
+          bodyText: angular.element("<div>Please complete all mandatory fields.</div>"),
           style: "tiw",
           acceptButton: {
             text: "OK",
             action: function () {
-              $(".modal-footer .btn-default").click();
+              angular.element(".modal-footer .btn-default").click();
             }
 
           },
@@ -153,14 +157,14 @@
         } else {
           angular.element.loadingLayerTIW();
           if (res && res.data.FailReason && res.data.DuplicateClientFolderUrl) {
-            $.modalTIW({
+            angular.element.modalTIW({
               headerText: "Warning",
-              bodyText: $("<div>" + res.data.FailReason + "</div><br><a target='_blank' href='" + res.data.DuplicateClientFolderUrl + "'>Please click here to go to the folder.</a>"),
+              bodyText: angular.element("<div>" + res.data.FailReason + "</div><br><a target='_blank' href='" + res.data.DuplicateClientFolderUrl + "'>Please click here to go to the folder.</a>"),
               style: "tiw",
               acceptButton: {
                 text: "OK",
                 action: function () {
-                  $(".modal-footer .btn-default").click();
+                  angular.element(".modal-footer .btn-default").click();
                 }
               },
               closeButton: {
@@ -184,14 +188,14 @@
         if (res.data) {
 
           if (res.data == -1) {
-            $.modalTIW({
+            angular.element.modalTIW({
               headerText: "",
-              bodyText: $("<div>Unable to create client folder. Please contact helpdesk.</div>"),
+              bodyText: angular.element("<div>Unable to create client folder. Please contact helpdesk.</div>"),
               style: "tiw",
               acceptButton: {
                 text: "OK",
                 action: function () {
-                  $(".modal-footer .btn-default").click();
+                  angular.element(".modal-footer .btn-default").click();
                   $state.go("main");
                   $scope.$apply();
                 }
@@ -206,14 +210,14 @@
             return false;
           }
 
-          $.modalTIW({
+          angular.element.modalTIW({
             headerText: "",
-            bodyText: $("<div>Client Folder created successfully with the id : " + res.data + "</div>"),
+            bodyText: angular.element("<div>Client Folder created successfully with the id : " + res.data + "</div>"),
             style: "tiw",
             acceptButton: {
               text: "OK",
               action: function () {
-                $(".modal-footer .btn-default").click();
+                angular.element(".modal-footer .btn-default").click();
                 $state.go("main");
                 $scope.$apply();
               }
@@ -224,8 +228,6 @@
               text: "No"
             }
           });
-        } else {
-
         }
 
       }, function () {

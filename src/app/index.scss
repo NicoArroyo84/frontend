@@ -31,7 +31,7 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
 .tab-selected {
   background-color: rgba(250,250,250,1) !important;
   border-top : 1px solid #CAD1D5;
-  box-shadow: 0px 5px 4px 4px #A9A6A6;
+  box-shadow: 0 5px 4px 4px #A9A6A6;
   z-index: 1;
   border-left: none;
   border-right: none !important;
@@ -41,38 +41,38 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
 
 .menu-container-TIW {
   max-width: 960px;
-  padding: 0px !important;
+  padding: 0 !important;
   height: 43px;
   overflow: hidden;
 }
 
 .menu-TIW {
-  padding-left: 0px;
+  padding-left: 0;
   border: medium none !important;
   height: 53px !important;
   min-height: 53px !important;
-  border-radius: 0px;
+  border-radius: 0;
 }
 
 .menu-TIW > div {
-  padding-left: 0px;
+  padding-left: 0;
 }
 
 .menu-TIW .navbar-collapse {
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 
 
 .nav > li:first-child a {
   border-left: 1px solid #CAD1D5;
-  border-radius: 5px 0px 0px;
+  border-radius: 5px 0 0;
 }
 
 .nav > li:last-child a {
   border-right: none !important;
-  border-radius: 0px 5px 0px;
+  border-radius: 0 5px 0;
 }
 
 .nav > li:last-child a {
@@ -98,7 +98,7 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
 .panel-body {
   background-color: #EBEDEF;
   /*border: silver 1px solid;*/
-  box-shadow: silver 0px 5px 10px -4px;
+  box-shadow: silver 0 5px 10px -4px;
 }
 
 .btn-primary {
@@ -122,7 +122,7 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
 }
 
 .pagination-container ul {
-  margin-top:0px;
+  margin-top:0;
 }
 
 .pagination-container a {
@@ -135,7 +135,7 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
 
 .table-container {
   min-height: 212px;
-  box-shadow: silver 0px 5px 10px -4px;
+  box-shadow: silver 0 5px 10px -4px;
 }
 
 .table-container td {
@@ -225,23 +225,6 @@ th span {
   background-color: #f9f4ca !important;
 }
 
-
-#myTabs{
-  background-color: rgba(250,250,250,1) !important;
-}
-
-#myTabs .active > a {
-
-  background-color: #EBEDEF !important;
-  border-radius: unset !important;
-  border-top: #3e6176 1px solid;
-}
-
-
-#myTabs a {
-  color: #51758a !important;
-}
-
 .btn-toolbar{
   margin-bottom:5px;
 }
@@ -259,7 +242,7 @@ th span {
 }
 
 .btn-toolbar > .btn-group:first-child {
-  margin-left:0px;
+  margin-left:0;
   margin-top:5px;
   padding:4px;
   border: 1px solid silver;
@@ -282,7 +265,7 @@ th span {
 
 .not-before-content {
   border:none !important;
-  padding: 0px !important;
+  padding: 0 !important;
 }
 
 .not-before-content:before {
@@ -292,11 +275,11 @@ th span {
 
 .btn-toolbar > .btn-group:last-child > button {
   font-size:11px;
-  margin-left:0px;
+  margin-left:0;
 }
 
 .table-publishing-header {
-  margin-top : 0px !important;
+  margin-top : 0 !important;
 }
 
 .sign_tos {
@@ -335,12 +318,8 @@ a.disabled:hover {
 
 .header-container{
   height: 90px;
-
-  margin-bottom: 0px;
-
+  margin-bottom: 0;
 }
-
-
 
 .body-jhi .panel-heading{
   background: -webkit-linear-gradient(top, rgba(201,21,31,.9), #cf0400) !important;
@@ -377,7 +356,7 @@ a.disabled:hover {
 
 .accordion {
   border: none;
-  margin-bottom: none !important;
+  margin-bottom: 0 !important;
 }
 
 .accordion .panel {
@@ -409,7 +388,7 @@ a.disabled:hover {
 }
 
 .no-padding-left{
-  padding-left : 0px !important;
+  padding-left : 0 !important;
 }
 
 .mandatory-mark {
@@ -429,7 +408,7 @@ a.disabled:hover {
 
 .help-block {
   font-size: 13px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 

@@ -48,34 +48,17 @@
                 <div class="form-group">
                     <div class="col-sm-7"></div>
                     <div class="col-sm-2">
-                        <button ng-click="client.Cancel()" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
+                        <button type="button" ng-click="client.Cancel()" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
                     </div>
                     <div class="col-sm-2">
-                        <button ng-disabled="clientForm.$invalid || !client.accCodeValid" ng-click="client.Finish()" class="btn btn-tiw-green btn-primary btn-block">Finish</button>
+                        <button type="button" ng-disabled="clientForm.$invalid || !client.accCodeValid" ng-click="client.Finish()" class="btn btn-tiw-green btn-primary btn-block">Finish</button>
                     </div>
                 </div>
             </div>
 
         </form>
 
-        <span ng-click="client.test()">TEST ME</span>
 
       <div tiw-table records-per-page="5" columns="Type,col1,col2" costum-columns-names="OrganisationType,," costum-columns="{{client.costumColumns}}" data="client.OrganisationTypeList"></div>
     </div>
 </div>
-
-
-<script>
-          //to avoid to use enter on text input and get back to the previous page as the cancel button always comes first
-          $(document).ready(function () {
-
-              angular.element("input:text").on("keypress", function (e) {
-                  if (e.keyCode == 13) {
-                      e.preventDefault();
-                  }
-
-              })
-
-          })
-
-</script>

@@ -48,11 +48,11 @@
                         <div class="col-sm-7"></div>
 
                         <div class="col-sm-2">
-                            <button ng-click="ucr.Cancel()" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
+                            <button type="button" ng-click="ucr.Cancel()" class="btn btn-tiw-green btn-primary btn-block">Cancel</button>
                         </div>
 
                         <div class="col-sm-2">
-                            <button ng-disabled="ucrForm.$invalid || !ucr.umrValid" ng-click="ucr.CreateUCR()" class="btn btn-tiw-green btn-primary btn-block">Finish</button>
+                            <button type="button" ng-disabled="ucrForm.$invalid || !ucr.umrValid" ng-click="ucr.CreateUCR()" class="btn btn-tiw-green btn-primary btn-block">Finish</button>
                         </div>
                     </div>
                 </div>
@@ -61,34 +61,3 @@
         </div>
     </div>
 
-    <script>
-        //to avoid to use enter on text input and get back to the previous page as the cancel button always comes first
-        //$(document).ready(function () {
-
-        //    angular.element("input:text").on("keypress", function (e) {
-        //        if (e.keyCode == 13) {
-        //            e.preventDefault();
-        //        }
-
-        //    })
-
-        //})
-
-
-        $(document).ready(function () {
-
-            //to avoid to use enter on text input and get back to the previous page as the cancel button always comes first
-            $(document).ready(function () {
-
-                angular.element("input:text").on("keypress", function (e) {
-                    if (e.keyCode == 13) {
-                        e.preventDefault();
-                    }
-
-                })
-
-            })
-
-        });
-
-    </script>

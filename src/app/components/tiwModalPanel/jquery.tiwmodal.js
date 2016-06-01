@@ -1,39 +1,27 @@
-﻿
-/*-----------------------------------------------------------------------
-// <copyright file="jquery.tiwmodal.js" company="TIWGroup">
-//     Copyright (c) TIW Group.  All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------*/
-//
-//
-//
-//-----------------------------------------------------------------------*/
-
-"use strict";
-(function ($) {
+﻿/* eslint-disable */
 
 
-
-
-    $.modalTIW = function (opts) {
+(function () {
+  "use strict";
+    angular.element.modalTIW = function (opts) {
 
         if (angular.element(".modal-backdrop").length) {
             return;
         }
 
-        $.modalTIW.regional = [];
-        $.modalTIW.regional["en"] = {
+        angular.element.modalTIW.regional = [];
+        angular.element.modalTIW.regional["en"] = {
             closeButtonText: "No"
         };
 
-        $.modalTIW.regional["fr"] = {
+        angular.element.modalTIW.regional["fr"] = {
             closeButtonText: "Fermer"
         };
 
-        $.modalTIW.regional["nl"] = {
+        angular.element.modalTIW.regional["nl"] = {
             closeButtonText: "Afsluiten"
         };
-        $.modalTIW.defaults = {
+        angular.element.modalTIW.defaults = {
             headerText: "",
             bodyText: "",
             style: "",
@@ -41,7 +29,7 @@
             documentViewerMode: false,
             closeButton: {
                 visible: false,
-                text: $.modalTIW.regional[(opts.language ? opts.language : "en")].closeButtonText,
+                text: angular.element.modalTIW.regional[(opts.language ? opts.language : "en")].closeButtonText,
                 action: function () { }
             },
             acceptButton: {
@@ -64,8 +52,7 @@
 
 
 
-        var options = $.extend(true, $.modalTIW.defaults, opts);
-
+        var options = angular.element.extend(true, angular.element.modalTIW.defaults, opts);
 
 
         var $myModal = angular.element('<div class="modal fade" id="myTIWModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
@@ -117,7 +104,7 @@
         },
         getMsgTranslation = function (array) {
             var str = "No language string found.",
-            strRequested = $(array).filter(function (i, val) {
+            strRequested = angular.element(array).filter(function (i, val) {
                 return val[0] == options.language;
             });
             try {
@@ -129,14 +116,14 @@
             return str;
 
 
-        }
+        };
 
-        if ($("#myTIWModal").length) {
-            $("#myTIWModal").remove();
+        if (angular.element("#myTIWModal").length) {
+            angular.element("#myTIWModal").remove();
         }
 
         if (options.acceptButton.text.length) {
-            if ($.isArray(options.acceptButton.text)) {
+            if (angular.element.isArray(options.acceptButton.text)) {
                 btnAccept.text(getMsgTranslation(options.acceptButton.text));
             } else {
                 btnAccept.text(options.acceptButton.text);
@@ -176,7 +163,7 @@
         if (options.bodyText instanceof jQuery) {
             $myModal.find(".modal-body p").append(options.bodyText);
             options.bodyText.show();
-        } else if ($.isArray(options.bodyText)) {
+        } else if (angular.element.isArray(options.bodyText)) {
             $myModal.find(".modal-body p").text(getMsgTranslation(options.bodyText));
         } else {
             $myModal.find(".modal-body p").text(options.bodyText);
@@ -185,7 +172,7 @@
         if (options.style === "tiw") {
             $myModal.find(".modal-content").addClass("tiw-modal-content");
         }
-        if ($.isArray(options.headerText)) {
+        if (angular.element.isArray(options.headerText)) {
             $myModal.find(".modal-title").text(getMsgTranslation(options.headerText));
         } else {
             $myModal.find(".modal-title").text(options.headerText);
@@ -212,7 +199,7 @@
 
 
 
-}(window.jQuery, window, document));
+}());
 
 
 
