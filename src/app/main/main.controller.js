@@ -4,7 +4,7 @@
     .module('triremeApp')
     .controller('MainController', MainController);
 
-  function MainController($state, userService) {
+  function MainController($state, userService,modalFactory) {
     var vm = this;
 
     vm.GoToCreateQuote = GoToCreateQuote;
@@ -33,7 +33,7 @@
 
       }, function () {
         angular.element.loadingLayerTIW();
-        //to do error handling
+        modalFactory.showModal("Warning", "<div>An error occurred. Please try again later</div>");
       });
     }
 

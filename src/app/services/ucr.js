@@ -20,9 +20,8 @@
           return $http.get("app/json/bool.json");
         },
         CreateUCR: function (organisation, umrFolderNodeId, ucr) {
-
-          return $http.post("../../Ucr/CreateUcrFolder", { organisation: organisation, umrFolderNodeId: umrFolderNodeId, ucr: ucr });
-          //return $http.get("json/bool.json");
+          return $http.get("app/json/creation_success.json");
+          //return $http.post("../../Ucr/CreateUcrFolder", { organisation: organisation, umrFolderNodeId: umrFolderNodeId, ucr: ucr });
 
         }
       }

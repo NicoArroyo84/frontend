@@ -99,7 +99,7 @@
                 <div class="form-group" ng-class="{ 'has-error' : (umrForm.insurance_name.$invalid && !umrForm.insurance_name.$pristine) }">
                     <label for="quote" class="col-xs-3 control-label">Insured Name</label>
                     <div class="col-xs-8">
-                        <input name="insurance_name" required maxlength="250" ng-model="umr.insurance_name" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                        <input name="insurance_name" required maxlength="250" autocomplete="off" ng-model="umr.insurance_name" class="form-control input-sm" /><span class="mandatory-mark">*</span>
                         <p ng-show="umrForm.insurance_name.$invalid && !umrForm.insurance_name.$pristine" class="help-block">Insured Name is required.</p>
                     </div>
                 </div>
@@ -120,14 +120,15 @@
                     </div>
                 </div>
 
-                <div class="form-group" ng-class="{ 'has-error' : (umrForm.unique_policy_number.$invalid && !umrForm.unique_policy_number.$pristine) }">
-                    <label for="quote" class="col-xs-3 control-label">Unique Policy Number</label>
-                    <div class="col-xs-2">
-                        <input required ng-trim="false" name="unique_policy_number" only-digits maxlength="4" ng-change="umr.UpdateUMR()" ng-model="umr.unique_policy_number" class="form-control input-sm" /><span class="mandatory-mark">*</span>
-                    </div>
-                    <div class="col-xs-7">
-                        <p ng-show="umrForm.unique_policy_number.$invalid && !umrForm.unique_policy_number.$pristine" class="help-block">Insured Name is required.</p>
-                    </div>
+                <div class="form-group" ng-class="{ 'has-error' : (umrForm.unique_policy_number.$invalid && !umrForm.unique_policy_number.$pristine)  || ((umr.unique_policy_number.length < 4) && !umrForm.unique_policy_number.$pristine)}">
+                  <label for="quote" class="col-xs-3 control-label">Unique Policy Number</label>
+                  <div class="col-xs-2">
+                    <input required autocomplete="off" ng-trim="false" name="unique_policy_number" only-digits maxlength="4" ng-change="umr.UpdateUMR()" ng-model="umr.unique_policy_number" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                  </div>
+                  <div class="col-xs-7">
+                    <p ng-show="umrForm.unique_policy_number.$invalid && !umrForm.unique_policy_number.$pristine" class="help-block">Unique Policy Number is required.</p>
+                    <p ng-show="(umr.unique_policy_number.length < 4) && !umrForm.unique_policy_number.$pristine" class="help-block ucr-validation-error">Unique Policy Number must be 4 chars in length.</p>
+                  </div>
                 </div>
 
                 <div class="form-group">

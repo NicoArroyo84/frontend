@@ -35,27 +35,27 @@
                              classOfBusiness, lineSlip, bindingAuthority, openMarket) {
 
 
-          //return $http.get("json/bool.json");
+          return $http.get("app/json/creation_success.json");
 
-          return $http.post("../../Umr/CreateUmr", {
-            organisation: organisation,
-            clientFolderNodeId: clientFolderNodeId,
-            clientName: clientName,
-            clientCode: clientCode,
-            location: location,
-            brokerCode: brokerCode,
-            policyReference: policyReference,
-            internalPolicyReference: internalPolicyReference,
-            fromQuote: fromQuote,
-            quoteFolderNodeId: quoteFolderNodeId,
-            riskYear: riskYear,
-            insuredName: insuredName,
-            departmentCode: departmentCode,
-            classOfBusiness: classOfBusiness,
-            lineSlip: lineSlip,
-            bindingAuthority: bindingAuthority,
-            openMarket: openMarket
-          });
+          //return $http.post("../../Umr/CreateUmr", {
+          //  organisation: organisation,
+          //  clientFolderNodeId: clientFolderNodeId,
+          //  clientName: clientName,
+          //  clientCode: clientCode,
+          //  location: location,
+          //  brokerCode: brokerCode,
+          //  policyReference: policyReference,
+          //  internalPolicyReference: internalPolicyReference,
+          //  fromQuote: fromQuote,
+          //  quoteFolderNodeId: quoteFolderNodeId,
+          //  riskYear: riskYear,
+          //  insuredName: insuredName,
+          //  departmentCode: departmentCode,
+          //  classOfBusiness: classOfBusiness,
+          //  lineSlip: lineSlip,
+          //  bindingAuthority: bindingAuthority,
+          //  openMarket: openMarket
+          //});
         },
         SearchUmrFolder: function (organisation, queryString, numberOfResults) {
           return $http.get("app/json/umr.json");

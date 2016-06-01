@@ -25,7 +25,7 @@
         angular.element('body').bind('touchmove', false);
 
         var $container = angular.element(document),
-            $div = angular.element("<div id='loadingLayerTIW'><span><img src='images/ajax-loader.gif'></span></div>"),
+            $div = angular.element("<div id='loadingLayerTIW'><span><img src='app/images/ajax-loader.gif'></span></div>"),
             $img = $div.find("img"),
             scrollBarWidth = 12;
         if (options.container == null) {

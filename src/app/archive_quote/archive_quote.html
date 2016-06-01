@@ -26,7 +26,7 @@
                     <label class="col-xs-3 control-label">Archive Reason: </label>
                     <div class="col-xs-8">
                         <select name="reason" required ng-model="quote.archive_reason" class="form-control input-sm">
-                            <option ng-repeat="reason in quote.ntu_reasons" value="{{reason.ID}}">{{reason.Name}}</option>
+                            <option ng-repeat="reason in quote.ntu_reasons" value="{{reason.Id}}">{{reason.Reason}}</option>
                         </select><span class="mandatory-mark">*</span>
                         <p ng-show="archiveForm.reason.$invalid && !archiveForm.reason.$pristine" class="help-block">Archive Reason is required.</p>
 

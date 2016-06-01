@@ -16,7 +16,6 @@
                     <div class="col-xs-8">
                         <input name="reference" required id="quote_reference" ng-model="quote.quote_reference" autocomplete="off" maxlength="9" class="form-control input-sm text-uppercase" /><span class="mandatory-mark">*</span>
                         <p ng-show="quoteForm.reference.$invalid && !quoteForm.reference.$pristine" class="help-block">Quote Reference is required.</p>
-                        <!--<input id="quote_reference" init-focus auto-complete ui-items="quote.quotesList" ng-change="quote.UpdateAutocomplete()" ng-model="quote.quote" maxlength="9" class="form-control input-sm" />-->
                     </div>
                 </div>
 
@@ -42,7 +41,7 @@
                     <label class="col-xs-3 control-label">Archive Reason: </label>
                     <div class="col-xs-8">
                         <select ng-model="quote.archive_reason" class="form-control input-sm" >
-                            <option required ng-repeat="reason in quote.ntu_reasons" value="{{reason.ID}}">{{reason.Name}}</option>
+                            <option required ng-repeat="reason in quote.ntu_reasons" value="{{reason.Id}}">{{reason.Reason}}</option>
                         </select><span class="mandatory-mark">*</span>
                     </div>
                 </div>

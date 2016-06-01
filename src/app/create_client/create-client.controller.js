@@ -18,12 +18,15 @@
     vm.Finish = Finish;
 
     vm.OrganisationTypeList = [];
-    vm.costumColumns = [{ "name": "col1", "template": "<a ng-click='client.hola()'>Edit</a>" }, { "name": "col2", "template": "<a ng-class='{\"disabled\":dat.InUse}' ng-click='types.DeleteOrganisationType(dat.IdOrganisationType,dat.InUse)'>Delete</a>" }];
+    vm.costumColumns = [{ "name": "col1", "template": "<a ng-click='client.EditOrganisation(dat.Type)'>Edit</a>" }, { "name": "col2", "template": "<a ng-class='{\"disabled\":dat.InUse}' ng-click='client.DeleteOrganisation(dat)'>Delete</a>" }];
     getOrganisationTypes();
-    vm.hola = function(){
-      modalFactory.showModal("hola","que tal");
+    vm.EditOrganisation = function(str){
+      modalFactory.showModal("Edit organisation","Edit organisation :  " + str.toUpperCase());
     }
 
+    vm.DeleteOrganisation= function (org) {
+      modalFactory.showModal("Warning","Confirm deletion <br><br> ID: " + org.IdOrganisationType + ". Name: " + org.Type.toUpperCase());
+    }
 
     function getOrganisationTypes() {
 
@@ -71,7 +74,7 @@
     function CheckAccCode(client_code) {
 
       if (!vm.client_code) {
-        return false;
+        return;
       }
 
       angular.element.loadingLayerTIW();
@@ -81,67 +84,24 @@
         angular.element.loadingLayerTIW();
         if (res.data && res.data.FailReason && res.data.DuplicateClientFolderUrl) {
           vm.accCodeValid = false;
-          angular.element.modalTIW({
-            headerText: "Warning",
-            bodyText: angular.element("<div>" + res.data.FailReason + "</div><br><a target='_blank' href='" + res.data.DuplicateClientFolderUrl + "'>Please click here to go to the folder.</a>"),
-            style: "tiw",
-            acceptButton: {
-              text: "OK",
-              action: function () {
-                angular.element(".modal-footer .btn-default").click();
-              }
-            },
-            closeButton: {
-              visible: false,
-              text: "No"
-            }
-          });
+          modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div><br><a target='_blank' href='" + res.data.DuplicateClientFolderUrl + "'>Please click here to go to the folder.</a>");
         }
-
 
       }, function () {
         angular.element.loadingLayerTIW();
+        vm.accCodeValid = false;
+        modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
       });
     }
 
-
     function Cancel() {
-
-
       $state.go("main", { organisation: localStorage.getItem("organisation_name") });
     }
 
-
-    angular.element("#location").ForceStrictAlpha(true);
-    angular.element("#client_code").ForceStrictAlphaNumerics();
-
-    angular.element("#client_name").on("keydown", function (e) {
-      if (e.keyCode == 186) {
-        e.preventDefault();
-        return false;
-      }
-    });
-
-
     function Finish() {
       if (!(vm.client_group && vm.client_name && vm.client_code)) {
-        angular.element.modalTIW({
-          headerText: "Warning",
-          bodyText: angular.element("<div>Please complete all mandatory fields.</div>"),
-          style: "tiw",
-          acceptButton: {
-            text: "OK",
-            action: function () {
-              angular.element(".modal-footer .btn-default").click();
-            }
-
-          },
-          closeButton: {
-            visible: false,
-            text: "No"
-          }
-        });
-        return false;
+        modalFactory.showModal("Warning", "<div>Please complete all mandatory fields.</div>");
+        return;
       }
 
       CheckAccCodeAndFinish();
@@ -152,33 +112,20 @@
       angular.element.loadingLayerTIW();
 
       clientsService.CheckAccCode(localStorage.getItem("organisation_name"), vm.client_code).then(function (res) {
+
         if (res.data && res.data.IsValid) {
           CreateClientFolder();
         } else {
           angular.element.loadingLayerTIW();
-          if (res && res.data.FailReason && res.data.DuplicateClientFolderUrl) {
-            angular.element.modalTIW({
-              headerText: "Warning",
-              bodyText: angular.element("<div>" + res.data.FailReason + "</div><br><a target='_blank' href='" + res.data.DuplicateClientFolderUrl + "'>Please click here to go to the folder.</a>"),
-              style: "tiw",
-              acceptButton: {
-                text: "OK",
-                action: function () {
-                  angular.element(".modal-footer .btn-default").click();
-                }
-              },
-              closeButton: {
-                visible: false,
-                text: "No"
-              }
-            });
-
+          if (res.data.FailReason && res.data.DuplicateClientFolderUrl) {
+            vm.accCodeValid = false;
+            modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div><br><a target='_blank' href='" + res.data.DuplicateClientFolderUrl + "'>Please click here to go to the folder.</a>");
           }
         }
-
-
       }, function () {
         angular.element.loadingLayerTIW();
+        vm.accCodeValid = false;
+        modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
       });
     }
 
@@ -188,52 +135,33 @@
         if (res.data) {
 
           if (res.data == -1) {
-            angular.element.modalTIW({
-              headerText: "",
-              bodyText: angular.element("<div>Unable to create client folder. Please contact helpdesk.</div>"),
-              style: "tiw",
-              acceptButton: {
-                text: "OK",
-                action: function () {
-                  angular.element(".modal-footer .btn-default").click();
-                  $state.go("main");
-                  $scope.$apply();
-                }
-
-              },
-              closeButton: {
-                visible: false,
-                text: "No"
-              }
+            modalFactory.showModal("Warning", "<div>Unable to create client folder. Please contact helpdesk.</div>", function () {
+              $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+              $scope.$apply();
             });
 
             return false;
           }
 
-          angular.element.modalTIW({
-            headerText: "",
-            bodyText: angular.element("<div>Client Folder created successfully with the id : " + res.data + "</div>"),
-            style: "tiw",
-            acceptButton: {
-              text: "OK",
-              action: function () {
-                angular.element(".modal-footer .btn-default").click();
-                $state.go("main");
-                $scope.$apply();
-              }
-
-            },
-            closeButton: {
-              visible: false,
-              text: "No"
-            }
+          modalFactory.showModal("", "<div>Client Folder created successfully with the id : " + res.data + "</div>", function () {
+            $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+            $scope.$apply();
           });
         }
 
       }, function () {
         angular.element.loadingLayerTIW();
+        modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
       })
     }
+
+    angular.element("#location").ForceStrictAlpha(true);
+    angular.element("#client_code").ForceStrictAlphaNumerics();
+    angular.element("#client_name").on("keydown", function (e) {
+      if (e.keyCode == 186) {
+        e.preventDefault();
+      }
+    });
 
   }
 

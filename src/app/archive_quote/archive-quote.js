@@ -1,5 +1,3 @@
-
-
 (function () {
   'use strict';
 
@@ -8,7 +6,7 @@
     .module('triremeApp')
     .controller('ArchiveQuoteController', ArchiveQuoteController);
 
-  function ArchiveQuoteController($scope, $state, quoteService, userService) {
+  function ArchiveQuoteController($scope, $state, quoteService, userService, modalFactory) {
     var vm = this;
     vm.quotesList = [];
 
@@ -39,18 +37,16 @@
       });
     }
 
-
-
     function GetNTUReasons() {
       quoteService.GetNTUReason(localStorage.getItem("organisation_name")).then(function (reasons) {
           angular.element.loadingLayerTIW();
           if (reasons.data) {
             vm.ntu_reasons = reasons.data;
           }
-
         },
         function () {
           angular.element.loadingLayerTIW();
+          modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
         });
     }
 
@@ -62,107 +58,52 @@
           angular.forEach(data.data, function (val) {
             vm.quotesList.push({ "label": val.QuoteValue, "value": val.QuoteNodeId });
           });
-
-
         });
     }
 
     function Finish() {
       if (!(angular.element("#quote_reference").attr("idelement") && vm.archive_reason)) {
-        angular.element.modalTIW({
-          headerText: "Warning",
-          bodyText: angular.element("<div>Please complete all mandatory fields.</div>"),
-          style: "tiw",
-          acceptButton: {
-            text: "OK",
-            action: function () {
-              angular.element(".modal-footer .btn-default").click();
-            }
-
-          },
-          closeButton: {
-            visible: false,
-            text: "No"
-          }
-        });
-        return false;
+        modalFactory.showModal("Warning", "<div>Please complete all mandatory fields.</div>");
+        return;
       }
+
       angular.element.loadingLayerTIW();
       quoteService.QuoteToNTU(angular.element("#quote_reference").attr("idelement"), localStorage.getItem("organisation_name"), vm.archive_reason).then(function (res) {
 
         angular.element.loadingLayerTIW();
-        if (res && res.data) {
 
-          CreationSuccess(angular.element("#quote_reference").attr("idelement"));
+        if (res.data) {
+          modalFactory.showModal("", "<div>Quote has been successfully archived.</div>", function () {
+            $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+            $scope.$apply();
+          });
         } else {
-          CreationFailed("error to be expecified");
+          modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
         }
       }, function () {
         angular.element.loadingLayerTIW();
+        modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
       });
-
     }
 
-
     function CheckQuote() {
+      var hasData;
+
       if (!angular.element("#quote_reference").data('ui-autocomplete')) {
         return;
       }
       vm.quoteValid = false;
       if (angular.element("#quote_reference").autocomplete("option", "source")) {
 
-        var hasData = angular.element("#quote_reference").autocomplete("option", "source").filter(function (val) { return val.label == angular.element("#quote_reference").val() });
-        if (hasData && hasData.length) {
-          vm.quoteValid = true;
-
-        }
+        hasData = angular.element("#quote_reference").autocomplete("option", "source").filter(function (val) { return val.label == angular.element("#quote_reference").val() });
+        vm.quoteValid = (hasData && hasData.length);
       }
     }
-
 
     function Cancel() {
       $state.go("main", { organisation: localStorage.getItem("organisation_name") });
     }
 
-    function CreationFailed(reason) {
-      angular.element.modalTIW({
-        headerText: "Warning",
-        bodyText: angular.element("<div>" + reason + "</div>"),
-        style: "tiw",
-        acceptButton: {
-          text: "OK",
-          action: function () {
-            angular.element(".modal-footer .btn-default").click();
-          }
-
-        },
-        closeButton: {
-          visible: false,
-          text: "No"
-        }
-      });
-    }
-
-    function CreationSuccess() {
-      angular.element.modalTIW({
-        headerText: "",
-        bodyText: angular.element("<div>Quote has been successfully archived.</div>"),
-        style: "tiw",
-        acceptButton: {
-          text: "OK",
-          action: function () {
-            angular.element(".modal-footer .btn-default").click();
-            $state.go("main")
-            $scope.$apply();
-          }
-
-        },
-        closeButton: {
-          visible: false,
-          text: "No"
-        }
-      });
-    }
 
   }
 

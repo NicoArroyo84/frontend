@@ -28,11 +28,12 @@
               //return $http.post("../../Client/CheckClientCode", { organisation: organisation, clientCode: clientCode });
           },
           CreateClientFolder: function (organisation, clientName, clientCode, groupFolderNodeId, location) {
-              return $http.post("../../Client/CreateClientFolder", { organisation: organisation, clientName: clientName, clientCode: clientCode, groupFolderNodeId: groupFolderNodeId, location: location });
+            return $http.get("app/json/creation_success.json");
+              //return $http.post("../../Client/CreateClientFolder", { organisation: organisation, clientName: clientName, clientCode: clientCode, groupFolderNodeId: groupFolderNodeId, location: location });
           },
-            getOrganisationTypes : function(){
-              return $http.get("app/json/organisations.json");
-            }
+          getOrganisationTypes : function(){
+            return $http.get("app/json/organisations.json");
+          }
 
       }
     }
