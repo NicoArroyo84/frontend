@@ -90,6 +90,11 @@
         }
 
         function ValidateUCR(create) {
+
+          vm.ucrValid = true;
+          vm.changed = false
+          vm.ucrErrorText = "";
+
             if (vm.claim_reference) {
                 if (!create) {
                     angular.element.loadingLayerTIW();
@@ -104,9 +109,9 @@
                         }
                     } else {
                         angular.element.loadingLayerTIW();
+                        vm.ucrValid = false;
                         if (res.data && res.data.FailReason) {
-
-                          modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>");
+                          vm.ucrErrorText = res.data.FailReason;
 
                         }
                     }
@@ -154,19 +159,23 @@
         }
 
         function ProceedCreateUCR() {
-            ucrService.CreateUCR(localStorage.getItem("organisation_name"), angular.element("#umr").attr("idelement"), angular.element("#umr").val() + vm.claim_reference).then(function (response) {
+            ucrService.CreateUCR(localStorage.getItem("organisation_name"), angular.element("#umr").attr("idelement"), angular.element("#umr").val() + vm.claim_reference).then(function (res) {
 
               angular.element.loadingLayerTIW();
+              if (res.data && res.data.OperationSuccess) {
+                modalFactory.showModal("", "<div>The UCR was created successfully.<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
+                  $state.go("main");
+                  $scope.$apply();
+                });
 
-              if (response.data == -1) {
-                modalFactory.showModal("Warning", "<div>Unable to create ucr. Please contact helpdesk.</div>");
-                return false;
+              } else {
+                if (res.data) {
+                  modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>", function () {
+                    $state.go("main");
+                    $scope.$apply();
+                  });
+                }
               }
-
-              modalFactory.showModal("", "<div>Ucr created successfully with the id : " + response.data + "</div>", function () {
-                $state.go("main", { organisation: localStorage.getItem("organisation_name") });
-                $scope.$apply();
-              });
 
             }, function () {
               angular.element.loadingLayerTIW();

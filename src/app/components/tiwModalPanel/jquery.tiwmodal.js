@@ -74,6 +74,7 @@
 							'</div>' +
 						 '</div>'),
 				btnAccept = $myModal.find(".btn-accept"),
+        btnCancel = $myModal.find(".btn-cancel"),
         close = function () {
             $myModal.modal("hide");
         },
@@ -135,14 +136,14 @@
         }
 
         if (!options.closeButton.visible) {
-            $myModal.find(".modal-footer .btn-default").hide();
+          btnCancel.hide();
         } else {
-            $myModal.find(".modal-footer .btn-default").on("click", options.closeButton.action);
+          btnCancel.on("click", options.closeButton.action);
 
             if ((typeof options.closeButton.text != "undefined") && (options.closeButton.text.length)) {
-                $myModal.find(".modal-footer .btn-default").text(options.closeButton.text);
+              btnCancel.text(options.closeButton.text);
             } else {
-                $myModal.find(".modal-footer .btn-default").hide();
+              btnCancel.hide();
             }
 
         }

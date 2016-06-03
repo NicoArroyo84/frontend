@@ -1,6 +1,4 @@
-/* eslint-disable */
-
-(function(){
+(function () {
 
   'use strict';
 
@@ -8,24 +6,40 @@
     .module('triremeApp')
     .factory('modalFactory', modalFactory);
 
-  function modalFactory(){
+  function modalFactory() {
     return {
-      showModal: function (header,msg,fn) {
-        angular.element.modalTIW({
+      showModal: function (header, msg, fn, isConfirmModal,fnCloseButton) {
+
+        var strTextAcceptButton = "OK";
+        if (angular.isFunction(fn)) {
+          strTextAcceptButton = "Continue";
+        }
+
+        if (angular.isDefined(isConfirmModal) && isConfirmModal) {
+          strTextAcceptButton = "Yes";
+        }
+
+
+        var modal = angular.element.modalTIW({
           headerText: header,
-          bodyText:angular.element("<div>" + msg + "</div>"),
+          bodyText: angular.element("<div>" + msg + "</div>"),
           style: "tiw",
           acceptButton: {
-            text: "OK",
+            text: strTextAcceptButton,
             action: function () {
-              angular.element(".modal-footer .btn-default").click();
-              if(angular.isFunction(fn)){
+              modal.closeModal();
+              if (angular.isFunction(fn)) {
                 fn();
               }
             }
           },
           closeButton: {
-            visible: false,
+            visible: angular.isDefined(isConfirmModal) && isConfirmModal,
+            action: function () {
+              if (angular.isFunction(fnCloseButton)) {
+                fnCloseButton();
+              }
+            },
             text: "No"
           }
         });
@@ -34,4 +48,3 @@
   }
 
 })();
-

@@ -96,7 +96,7 @@
       if (angular.element("#quote_reference").autocomplete("option", "source")) {
 
         hasData = angular.element("#quote_reference").autocomplete("option", "source").filter(function (val) { return val.label == angular.element("#quote_reference").val() });
-        vm.quoteValid = (hasData && hasData.length);
+        vm.quoteValid = !!(hasData && hasData.length);
       }
     }
 

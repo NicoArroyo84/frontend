@@ -17,7 +17,7 @@
 
                         <input name="reference" autocomplete="off" required id="quote_reference" auto-complete ui-items="quote.quotesList" ng-change="quote.UpdateAutocomplete()"  ng-blur="quote.CheckQuote()" ng-model="quote.quote" maxlength="9" class="form-control input-sm" /><span class="mandatory-mark">*</span>
                         <p ng-show="archiveForm.reference.$invalid && !archiveForm.reference.$pristine" class="help-block">Quote Reference is required.</p>
-                        <p ng-show="!quote.quoteValid && !archiveForm.reference.$pristine" class="help-block ">Quote Reference is not valid.</p>
+                        <p ng-show="!quote.quoteValid && !archiveForm.reference.$pristine && !archiveForm.reference.$invalid" class="help-block ">Quote Reference is not valid.</p>
                     </div>
                 </div>
 

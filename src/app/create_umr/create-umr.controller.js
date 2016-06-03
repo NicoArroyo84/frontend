@@ -7,45 +7,124 @@
        .controller('CreateUmrController', CreateUmrController);
 
     function CreateUmrController($scope, $state, clientsService, umrService, quoteService, userService,modalFactory) {
-        var vm = this;
+      var vm = this;
 
-        vm.open_market = true;
-        vm.binding_authority = false;
-        vm.lineslip = false;
-        vm.from_quote = false;
-        vm.include_archived = false;
-        vm.quote = "";
-        vm.umr_text = "";
-        vm.dep_code = "";
-        vm.risk_year = "";
-        vm.unique_policy_number = "";
-        vm.policy_ref = "";
-        vm.clientsList = [];
+      vm.open_market = true;
+      vm.binding_authority = false;
+      vm.lineslip = false;
+      vm.from_quote = false;
+      vm.include_archived = false;
+      vm.quote = "";
+      vm.insurance_name = "";
+      vm.umr_text = "";
+      vm.dep_code = "";
+      vm.class_buss = "";
+      vm.risk_year = "";
+      vm.unique_policy_number = "";
+      vm.policy_ref = "";
 
+      vm.brokerCodeSelected = "";
 
-        vm.UpdateAutocomplete = UpdateAutocomplete;
-        vm.UpdateAutocompleteClient = UpdateAutocompleteClient;
-        vm.ValidateUMR = ValidateUMR;
-        vm.ResetQuote = ResetQuote;
-        vm.CheckQuote = CheckQuote;
-        vm.CreateUMR = CreateUMR;
-        vm.organisation_name = localStorage.getItem("organisation_name");
-
-        vm.Cancel = Cancel;
-
-        vm.client_details = "";
-        vm.UpdateClientDetails = UpdateClientDetails;
-        vm.UpdateUMR = UpdateUMR;
+      vm.UpdateAutocomplete = UpdateAutocomplete;
+      vm.UpdateAutocompleteClient = UpdateAutocompleteClient;
+      vm.ValidateUMR = ValidateUMR;
+      vm.ResetQuote = ResetQuote;
+      vm.CheckQuote = CheckQuote;
+      vm.CreateUMR = CreateUMR;
+      vm.organisation_name = localStorage.getItem("organisation_name");
+      vm.BrokerCodeChanged = BrokerCodeChanged;
+      vm.Cancel = Cancel;
 
 
-        vm.FormValid = FormValid;
+      vm.UpdateClientDetails = UpdateClientDetails;
+      vm.UpdateUMR = UpdateUMR;
+
+
+      vm.FormValid = FormValid;
 
         function FormValid() {
-          return ((vm.unique_policy_number) && (vm.unique_policy_number.length != 4)) || ((vm.risk_year) && (vm.risk_year.length != 4)) || !vm.umrValid || (vm.from_quote && !vm.quoteValid) || ((vm.broker_code != vm.main_broker_code) && (!vm.policy_ref));
+          return ((vm.unique_policy_number) && (vm.unique_policy_number.length != 4)) ||
+            ((vm.risk_year) && (vm.risk_year.length != 4)) ||
+            !vm.umrValid ||
+            (vm.from_quote && !vm.quoteValid) ||
+            ((vm.broker_code != vm.main_broker_code) && (!vm.policy_ref)) ||
+            !vm.umr_text ||
+            (vm.umr_text.length < 5);
         }
 
         IsUserAllowed();
+        function CheckPristine() {
+          return $scope.umrForm.quote_reference.$pristine &&
+            $scope.umrForm.umr_text.$pristine &&
+            $scope.umrForm.insurance_name.$pristine &&
+            $scope.umrForm.dep_code.$pristine &&
+            $scope.umrForm.class_buss.$pristine &&
+            $scope.umrForm.risk_year.$pristine &&
+            $scope.umrForm.unique_policy_number.$pristine &&
+            $scope.umrForm.policy_ref.$pristine &&
+            $scope.umrForm.open_market.$pristine &&
+            $scope.umrForm.binding_authority.$pristine &&
+            $scope.umrForm.from_quote.$pristine &&
+            $scope.umrForm.lineslip.$pristine;
+        }
 
+        function BrokerCodeChanged() {
+
+          if (vm.brokerCodeSelected && (!CheckPristine())) {
+            modalFactory.showModal("Warning", "All data provided will be reset, do you wish to continue?", function () {
+
+              vm.include_archived = false;
+
+              vm.quote = "";
+              $scope.umrForm.quote_reference.$setPristine();
+
+              vm.umr_text = "";
+              $scope.umrForm.umr_text.$setPristine();
+
+              vm.insurance_name = "";
+              $scope.umrForm.insurance_name.$setPristine();
+
+              vm.dep_code = "";
+              $scope.umrForm.dep_code.$setPristine();
+
+              vm.class_buss = "";
+              $scope.umrForm.class_buss.$setPristine();
+
+              vm.risk_year = "";
+              $scope.umrForm.risk_year.$setPristine();
+
+              vm.unique_policy_number = "";
+              $scope.umrForm.unique_policy_number.$setPristine();
+
+              vm.policy_ref = "";
+              $scope.umrForm.policy_ref.$setPristine();
+
+              vm.open_market = true;
+              $scope.umrForm.open_market.$setPristine();
+
+              vm.binding_authority = false;
+              $scope.umrForm.binding_authority.$setPristine();
+
+              vm.lineslip = false;
+              $scope.umrForm.open_market.$setPristine();
+
+
+              vm.from_quote = false;
+              $scope.umrForm.from_quote.$setPristine();
+
+              vm.brokerCodeSelected = angular.copy(vm.broker_code);
+
+
+              $scope.$apply();
+
+            }, true, function () {
+              vm.broker_code = angular.copy(vm.brokerCodeSelected);
+              $scope.$apply();
+            });
+          } else {
+            vm.brokerCodeSelected = angular.copy(vm.broker_code);
+          }
+        }
 
         function IsUserAllowed() {
             angular.element.loadingLayerTIW();
@@ -71,10 +150,12 @@
         }
 
         function UpdateUMR() {
+          if (vm.broker_code == vm.main_broker_code) {
 
             vm.umr_text = (vm.dep_code ? vm.dep_code : "") +
-                          ((vm.risk_year && vm.risk_year.length == 4) ? vm.risk_year.substring(2, 4) : "") +
-                          (vm.unique_policy_number ? vm.unique_policy_number : "");
+              ((vm.risk_year && vm.risk_year.length == 4) ? vm.risk_year.substring(2, 4) : "") +
+              (vm.unique_policy_number ? vm.unique_policy_number : "");
+          }
         }
 
         function UpdateClientDetails() {
@@ -137,23 +218,25 @@
                     idQuoteNode = angular.element("#quote_reference").attr("idelement");
                 }
 
-                umrService.CreateUMR(vm.organisation_name, angular.element("#client_name").attr("idelement"), angular.element("#ClientName").val(), angular.element("#ClientCode").val(), angular.element("#Location").val(), vm.broker_code, vm.umr_text,
+                umrService.CreateUMR(vm.organisation_name, angular.element("#client_name").attr("idelement"), angular.element("#ClientName").val(), angular.element("#ClientCode").val(), angular.element("#Location").val(), vm.broker_code,vm.umr_text.toUpperCase(),
                     vm.policy_ref, vm.from_quote, idQuoteNode, vm.risk_year, vm.insurance_name, vm.dep_code, vm.class_buss,
                     vm.lineslip, vm.binding_authority, vm.open_market).then(function (res) {
 
-                        angular.element.loadingLayerTIW();
-                        if (res.data) {
-                            if (res.data == -1) {
-                              modalFactory.showModal("Warning", "<div>Unable to create umr. Please contact helpdesk.</div>");
-                              return false;
-                            }
+                      angular.element.loadingLayerTIW();
+                      if (res.data && res.data.OperationSuccess) {
+                        modalFactory.showModal("", "<div>The UMR was created successfully.<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
+                          $state.go("main");
+                          $scope.$apply();
+                        });
 
-                          modalFactory.showModal("", "<div>Umr created successfully with the id : " + res.data + "</div>", function(){
-                            $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+                      } else {
+                        if (res.data) {
+                          modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>", function () {
+                            $state.go("main");
                             $scope.$apply();
                           });
-
                         }
+                      }
                     }, function () {
                         angular.element.loadingLayerTIW();
                     });

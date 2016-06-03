@@ -12,7 +12,7 @@
     var vm = this;
     //$stateParams.organisation
     vm.accCodeValid = true;
-
+    vm.location = "";
     vm.CheckAccCode = CheckAccCode;
     vm.Cancel = Cancel;
     vm.Finish = Finish;
@@ -134,19 +134,21 @@
         angular.element.loadingLayerTIW();
         if (res.data) {
 
-          if (res.data == -1) {
-            modalFactory.showModal("Warning", "<div>Unable to create client folder. Please contact helpdesk.</div>", function () {
-              $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+          if (!res.data.OperationSuccess) {
+
+            modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>", function () {
+              $state.go("main");
               $scope.$apply();
             });
 
             return false;
           }
 
-          modalFactory.showModal("", "<div>Client Folder created successfully with the id : " + res.data + "</div>", function () {
-            $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+          modalFactory.showModal("", "<div>The Client Folder was created successfully.<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
+            $state.go("main");
             $scope.$apply();
           });
+
         }
 
       }, function () {

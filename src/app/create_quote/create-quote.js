@@ -101,13 +101,16 @@
 
                   angular.element.loadingLayerTIW();
                   if (response.data && response.data.OperationSuccess) {
-                    modalFactory.showModal("", "<div>Quote created successfully with the id " + response.data.QuoteNodeId + "</div>",function(){
-                      $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+                    modalFactory.showModal("", "<div>The Quote was created successfully.<br><br>Press <a target='_blank' href='" + response.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
+                      $state.go("main");
                       $scope.$apply();
                     });
                   } else {
                     if (response.data) {
-                      modalFactory.showModal("Warning", "<div>" + response.data.FailReason + "</div>");
+                      modalFactory.showModal("Warning", "<div>" + response.data.FailReason + "</div>", function () {
+                        $state.go("main");
+                        $scope.$apply();
+                      });
                     }
                   }
               }, function () {
@@ -119,16 +122,20 @@
               quoteService.CreateQuoteResponse(localStorage.getItem("organisation_name"), vm.quote_reference, vm.quote_name).then(function (response) {
 
                   angular.element.loadingLayerTIW();
-                  if (response.data && response.data.OperationSuccess) {
-                    modalFactory.showModal("", "<div>Quote created successfully with the id " + response.data.QuoteNodeId + "</div>", function () {
-                      $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+                if (response.data && response.data.OperationSuccess) {
+                  modalFactory.showModal("", "<div>The Quote was created successfully.<br><br>Press <a target='_blank' href='" + response.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
+                    $state.go("main");
+                    $scope.$apply();
+                  });
+
+                } else {
+                  if (response.data) {
+                    modalFactory.showModal("Warning", "<div>" + response.data.FailReason + "</div>", function () {
+                      $state.go("main");
                       $scope.$apply();
                     });
-                  } else {
-                      if (response.data) {
-                        modalFactory.showModal("Warning", "<div>" + response.data.FailReason + "</div>");
-                      }
                   }
+                }
               }, function () {
                   angular.element.loadingLayerTIW();
                   modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
