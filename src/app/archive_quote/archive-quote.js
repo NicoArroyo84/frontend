@@ -13,12 +13,10 @@
     vm.Cancel = Cancel;
     vm.Finish = Finish;
     vm.UpdateAutocomplete = UpdateAutocomplete;
-    vm.CheckQuote = CheckQuote;
 
     angular.element("#quote_reference").ForceStrictAlphaNumerics();
 
     IsUserAllowed();
-
 
     function IsUserAllowed() {
       angular.element.loadingLayerTIW();
@@ -50,25 +48,23 @@
         });
     }
 
-    function UpdateAutocomplete() {
+
+    function UpdateAutocomplete(w) {
+      vm.quote = w;
       quoteService.SearchQuote(localStorage.getItem("organisation_name"), vm.quote,false,10)
         .then(function (data) {
-          vm.quotesList = [];
-
-          angular.forEach(data.data, function (val) {
-            vm.quotesList.push({ "label": val.QuoteValue, "value": val.QuoteNodeId });
-          });
+          vm.quotesList = data.data;
         });
     }
 
     function Finish() {
-      if (!(angular.element("#quote_reference").attr("idelement") && vm.archive_reason)) {
+      if (!(vm.selectedQuote && vm.archive_reason)) {
         modalFactory.showModal("Warning", "<div>Please complete all mandatory fields.</div>");
         return;
       }
 
       angular.element.loadingLayerTIW();
-      quoteService.QuoteToNTU(angular.element("#quote_reference").attr("idelement"), localStorage.getItem("organisation_name"), vm.archive_reason).then(function (res) {
+      quoteService.QuoteToNTU(vm.selectedQuote, localStorage.getItem("organisation_name"), vm.archive_reason).then(function (res) {
 
         angular.element.loadingLayerTIW();
 
@@ -84,20 +80,6 @@
         angular.element.loadingLayerTIW();
         modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
       });
-    }
-
-    function CheckQuote() {
-      var hasData;
-
-      if (!angular.element("#quote_reference").data('ui-autocomplete')) {
-        return;
-      }
-      vm.quoteValid = false;
-      if (angular.element("#quote_reference").autocomplete("option", "source")) {
-
-        hasData = angular.element("#quote_reference").autocomplete("option", "source").filter(function (val) { return val.label == angular.element("#quote_reference").val() });
-        vm.quoteValid = !!(hasData && hasData.length);
-      }
     }
 
     function Cancel() {

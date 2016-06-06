@@ -20,6 +20,10 @@
           return $http.get("app/json/bool.json");
           //return $http.post("../../User/IsUserAllowed", { organisation: organisation, operation: operation });
         },
+        GetOrganisationFolderUrl: function (organisation) {
+          return $http.get("app/json/url.json");
+          //return $http.post("../../Process/GetOrganisationFolderUrl", { organisation: organisation });
+        },
         IsUserAllowedPermission : false
       }
     });
