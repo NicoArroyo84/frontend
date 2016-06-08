@@ -10,14 +10,14 @@
             <div>
 
                 <br />
-                <div class="form-group" ng-class="{ 'has-error' : archiveForm.reference.$invalid && !archiveForm.reference.$pristine || (!quote.selectedQuote && !archiveForm.reference.$pristine) }">
+                <div class="form-group" ng-class="{ 'has-error' : archiveForm.reference.$invalid && !archiveForm.reference.$pristine || (!quote.selectedQuote && archiveForm.reference.$touched && quote.quote) }">
                     <label for="quote" class="col-xs-3 control-label">Quote: </label>
                     <div class="col-xs-8">
                       <pre>Model: {{quote.selectedQuote | json}}</pre>
-                      <input type="text" ng-model="asyncSelected" ng-change="quote.UpdateAutocomplete();quote.selectedQuote =''" placeholder="Custom popup template" uib-typeahead="q.QuoteValue for q in quote.quotesList" typeahead-on-select="quote.selectedQuote=$item.QuoteNodeId" class="form-control input-sm ">
-                        <!--<input name="reference" autocomplete="off" required id="quote_reference" auto-complete ui-items="quote.quotesList" ng-change="quote.UpdateAutocomplete()"  ng-blur="quote.CheckQuote()" ng-model="quote.quote" maxlength="9" class="form-control input-sm" /><span class="mandatory-mark">*</span>-->
+                      <input id="umr" typee="text" autocomplete="off" auto-complete auto-complete-id-selected="quote.selectedQuote" required name="reference" ui-items="quote.quotesList" ng-blur="ucr.ValidateUMR()" ng-keypress="ucr.umrErrorText=''" ng-change="quote.UpdateAutocomplete();" ng-model="quote.quote" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+                      <!--<input autocomplete="off" name="reference" type="text" ng-model="quote.quote" ng-change="quote.UpdateAutocomplete();quote.selectedQuote =''" uib-typeahead="q.QuoteValue for q in quote.quotesList" typeahead-on-select="quote.selectedQuote=$item.QuoteNodeId" class="form-control input-sm ">-->
                         <p ng-show="archiveForm.reference.$invalid && !archiveForm.reference.$pristine" class="help-block">Quote Reference is required.</p>
-                        <p ng-show="!quote.selectedQuote && !archiveForm.reference.$pristine && !archiveForm.reference.$invalid" class="help-block ">Quote Reference is not valid.</p>
+                        <p ng-show="!quote.selectedQuote && archiveForm.reference.$touched && quote.quote" class="help-block ">Quote Reference is not valid.</p>
                     </div>
                 </div>
 

@@ -20,10 +20,12 @@ angular.module('tiwUI.autocomplete', [])
                      iElement.autocomplete({
                          source: data,
                          change: function () {
-                             angular.element(iElement.attr("idElement", ""));
+                              scope[iAttrs.autoCompleteIdSelected.split(".")[0]][iAttrs.autoCompleteIdSelected.split(".")[1]] = "";
+                              angular.element(iElement.attr("idElement", ""));
 
                              var aux = iElement.autocomplete("option", "source").filter(function (val) { return val.label == iElement.val() });
                              if (aux.length) {
+                                  scope[iAttrs.autoCompleteIdSelected.split(".")[0]][iAttrs.autoCompleteIdSelected.split(".")[1]] = aux[0].value;
                                  angular.element(iElement.attr("idElement", aux[0].value));
                                  angular.element(iElement.val(aux[0].label));
                                  scope.idElement = aux[0].value;
@@ -33,6 +35,7 @@ angular.module('tiwUI.autocomplete', [])
                          },
                          select: function (event, ui) {
                              event.preventDefault();
+                            scope[iAttrs.autoCompleteIdSelected.split(".")[0]][iAttrs.autoCompleteIdSelected.split(".")[1]] = ui.item.value;
                              angular.element(iElement.attr("idElement", ui.item.value));
                              angular.element(iElement.val(ui.item.label));
                              scope.idElement = ui.item.value;
@@ -50,12 +53,16 @@ angular.module('tiwUI.autocomplete', [])
                      }).on("autocompletefocus", function () {
                          return false;
                      }).on("keyup", function (event) {
+                         if ((event.keyCode != 13) && (event.keyCode != 9) && (event.keyCode != 16)) {
+                           scope[iAttrs.autoCompleteIdSelected.split(".")[0]][iAttrs.autoCompleteIdSelected.split(".")[1]] = "";
+                         }
+
                          if (typeof iElement.data("autocomplete") != "undefined") {
                              iElement.data("autocomplete")._trigger("change");
                          }
 
-                         if ((event.keyCode != 9 && event.keyCode != 16 && event.target.value) || (!event.target.value)) {
-                             angular.element(iElement).addClass("ui-autocomplete-loading");
+                         if ((event.keyCode != 9 && event.keyCode != 16 && event.keyCode != 13 && event.target.value) || (!event.target.value)) {
+                           angular.element(iElement).addClass("ui-autocomplete-loading");
                          }
 
                          if (event.keyCode == 40 || event.keyCode == 38) {

@@ -39,6 +39,25 @@
       });
     }
 
+    getClientList();
+    vm.costumColumnsClients = [{ "name": "col1", "template": "<a ng-click='client.DeleteClient(dat)'>Delete</a>" }];
+    vm.DeleteClient = DeleteClient;
+
+    function DeleteClient(client){
+      console.log(client);
+      clientsService.deleteClient(client).then(function(response){
+        console.log(response);
+      });
+
+    }
+
+    function getClientList() {
+      clientsService.getClientList(localStorage.getItem("organisation_name")).then(function(response){
+        console.log(response);
+        vm.ClientList = response.data.clients;
+      });
+    }
+
     IsUserAllowed();
 
     function IsUserAllowed() {

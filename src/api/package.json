@@ -1,0 +1,10 @@
+{
+  "IsUserAllowed": true,
+  "OperationsPermissions": {
+    "CreateUCR": true,
+    "CreateUMR": true,
+    "CreateQuote": true,
+    "CreateClient": true
+  }
+}
+

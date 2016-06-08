@@ -1,5 +1,5 @@
 ﻿
-<div class="panel panel-default" ng-controller="CreateUmrCtrl as umr">
+<div class="panel panel-default" ng-controller="CreateUmrController as umr">
   <div class="panel-heading">
     <h3 class="panel-title">Create UMR</h3>
     <a class="navbar-triangle"></a>
@@ -10,12 +10,14 @@
       <div>
 
         <br />
-        <div class="form-group"  ng-class="{ 'has-error' : (umrForm.client_name.$invalid && !umrForm.client_name.$pristine) || (!umr.umrValid && !umrForm.client_name.$pristine) }">
+        <div class="form-group"  ng-class="{ 'has-error' :  (!umr.client_name && !umrForm.client_name.$pristine) || (!umr.selectedUmr && umrForm.client_name.$touched && umr.client_name) }">
           <label for="quote" class="col-xs-3 control-label">Client: </label>
           <div class="col-xs-8">
-            <input autocomplete="off" id="client_name" name="client_name" required ng-blur="umr.UpdateClientDetails()" auto-complete ui-items="umr.clientsList" ng-change="umr.UpdateAutocompleteClient()" ng-model="umr.client_name" class="form-control input-sm" /><span class="mandatory-mark">*</span>
-            <p ng-show="umrForm.client_name.$invalid && !umrForm.client_name.$pristine" class="help-block">Client is required.</p>
-            <p ng-show="!umr.umrValid && !umrForm.client_name.$pristine && !umrForm.client_name.$invalid" class="help-block">Client is not valid.</p>
+            <pre>Model: {{umr.selectedUmr}}</pre>
+            <input autocomplete="off" auto-complete auto-complete-id-selected="umr.selectedUmr" required name="client_name" ui-items="umr.clientsList" ng-blur="umr.UpdateClientDetails()" ng-change="umr.UpdateAutocompleteClient()" ng-model="umr.client_name" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+            <!--<input autocomplete="off" ng-blur="umr.UpdateClientDetails()" name="client_name" type="text" ng-model="umr.client_name" ng-change="umr.UpdateAutocompleteClient();umr.selectedUmr =''" uib-typeahead="q.Name for q in umr.clientsList" typeahead-on-select="umr.selectedUmr=$item.NodeId" class="form-control input-sm ">-->
+            <p ng-show="!umr.client_name && !umrForm.client_name.$pristine" class="help-block">Client is required.</p>
+            <p ng-show="!umr.selectedUmr && umrForm.client_name.$touched && umr.client_name" class="help-block">Client is not valid.</p>
           </div>
         </div>
 
@@ -40,24 +42,24 @@
           </div>
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error' : ((umr.umr_text.length < 5) && !umrForm.umr_text.$pristine && (umr.broker_code != umr.main_broker_code)) }">
+        <div class="form-group" ng-class="{ 'has-error' : (umr.umr_text && (umr.umr_text.length < 5) && !umrForm.umr_text.$pristine && (umr.broker_code != umr.main_broker_code)) }">
           <label class="col-xs-3 control-label">UMR:</label>
           <div class="col-xs-2">
             <select required name="broker_code" ng-change="umr.BrokerCodeChanged()" ng-model="umr.broker_code" class="form-control input-sm">
-              <option main="{{code.MainBrokerCode}}" ng-repeat="code in umr.broker_code_list" value="{{code.BrokerCode}}">{{code.BrokerCode}}</option>
+              <option main="{{code.MainBrokerCode}}" ng-init="umr.broker_code = umr.main_broker_code" ng-repeat="code in umr.broker_code_list" value="{{code.BrokerCode}}">{{code.BrokerCode}}</option>
             </select>
             <p ng-show="umrForm.broker_code.$invalid && !umrForm.broker_code.$pristine" class="help-block ucr-validation-error">Broker Code is required.</p>
-            <p ng-show="((umr.umr_text.length < 5) && !umrForm.umr_text.$pristine && (umr.broker_code != umr.main_broker_code))" class="help-block ucr-validation-error">Policy Reference must be 5 chars in length at least.</p>
+            <p ng-show="(umr.umr_text && (umr.umr_text.length < 5) && !umrForm.umr_text.$pristine && (umr.broker_code != umr.main_broker_code))" class="help-block ucr-validation-error">Policy Reference must be 5 chars in length at least.</p>
           </div>
           <div class="col-xs-6 no-padding-left" ng-class="{ 'has-error' : (umrForm.umr_text.$invalid && !umrForm.umr_text.$pristine && (umr.broker_code !== umr.main_broker_code)) }">
-            <input id="umr_text" ng-readonly="(!umr.broker_code) || (umr.broker_code == umr.main_broker_code)" maxlength="12" name="umr_text" ng-blur="umr.ValidateUMR()" ng-model="umr.umr_text" class="form-control input-sm text-uppercase"  /><span class="mandatory-mark">*</span>
+            <input tooltip-enable="umr.broker_code === umr.main_broker_code" tooltip-placement="bottom-right" uib-tooltip="The {{umr.organisation_name}} Policy Reference is populated with the values you provide below" id="umr_text" ng-readonly="(!umr.broker_code) || (umr.broker_code == umr.main_broker_code)" maxlength="12" name="umr_text" ng-blur="umr.ValidateUMR()" ng-model="umr.umr_text" class="form-control input-sm text-uppercase"  /><span class="mandatory-mark">*</span>
           </div>
         </div>
 
         <div ng-show="(umr.broker_code != umr.main_broker_code) && umr.broker_code" ng-class="{ 'has-error' : (umrForm.policy_ref.$invalid && !umrForm.policy_ref.$pristine || ((umr.broker_code != umr.main_broker_code) && (!umr.policy_ref) && !umrForm.policy_ref.$pristine)) }" class="form-group">
-          <label class="col-xs-3 control-label">Internal Policy Reference:</label>
+          <label class="col-xs-3 control-label">{{umr.organisation_name}} Policy Reference:</label>
           <div class="col-xs-8">
-            <input name="policy_ref" ng-model="umr.policy_ref" autocomplete="off" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+            <input tabindex="-1" name="policy_ref" ng-model="umr.policy_ref" autocomplete="off" tooltip-placement="bottom-right" uib-tooltip="The {{umr.organisation_name}} Policy Reference is populated with the values you provide below" ng-readonly="true" class="form-control input-sm" /><span class="mandatory-mark">*</span>
             <p ng-show="(umrForm.policy_ref.$invalid && !umrForm.policy_ref.$pristine || ((umr.broker_code != umr.main_broker_code) && (!umr.policy_ref) && !umrForm.policy_ref.$pristine))" class="help-block ucr-validation-error">Internal Policy Reference is required.</p>
           </div>
         </div>
@@ -80,12 +82,15 @@
         <div ng-show="umr.from_quote" class="form-group" ng-class="{ 'has-error' : (!umr.quoteValid && !umrForm.quote_reference.$pristine && umr.from_quote) || (umrForm.quote_reference.$invalid && !umrForm.quote_reference.$pristine && umr.from_quote && (umr.quote.length === 0)) }">
           <label for="quote" class="col-xs-3 control-label">Search Quote</label>
           <div class="col-xs-8">
-            <input id="quote_reference" name="quote_reference" init-focus auto-complete autocomplete="off" ui-items="umr.quotesList" ng-change="umr.UpdateAutocomplete()" ng-blur="umr.CheckQuote()" ng-model="umr.quote" maxlength="9" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+            <pre>Model: {{umr.selectedQuote}}</pre>
+            <input autocomplete="off" auto-complete auto-complete-id-selected="umr.selectedQuote" required name="quote_reference" ui-items="umr.quotesList" ng-change="umr.UpdateAutocomplete()" ng-model="umr.quote" class="form-control input-sm" /><span class="mandatory-mark">*</span>
+            <!--<input autocomplete="off" name="quote_reference" type="text" ng-model="umr.quote" ng-change="umr.UpdateAutocomplete();umr.selectedQuote =''" uib-typeahead="q.QuoteValue for q in umr.quotesList" typeahead-on-select="umr.selectedQuote=$item.QuoteNodeId" class="form-control input-sm ">-->
+
             <p ng-show="!umr.quote && !umrForm.quote_reference.$pristine && umr.from_quote" class="help-block ">Quote Reference is required.</p>
-            <p ng-show="!umr.quoteValid && !umrForm.quote_reference.$pristine && umr.from_quote && (umr.quote.length > 0)" class="help-block ">Quote Reference is not valid.</p>
+            <p ng-show="!umr.selectedQuote && umrForm.quote_reference.$touched && umr.from_quote && umr.quote" class="help-block ">Quote Reference is not valid.</p>
           </div>
         </div>
-        <div class="form-group" ng-class="{ 'has-error' : (umrForm.risk_year.$invalid && !umrForm.risk_year.$pristine) || ((umr.risk_year.length < 4) && !umrForm.risk_year.$pristine) }">
+        <div class="form-group" ng-class="{ 'has-error' : (umrForm.risk_year.$invalid && !umrForm.risk_year.$pristine) || ((umr.risk_year) && (umr.risk_year.length < 4) && umrForm.risk_year.$touched) }">
           <label for="quote" class="col-xs-3 control-label">Risk Year</label>
           <div class="col-xs-2">
             <input ng-readonly="!umr.broker_code" ng-trim="false" required name="risk_year" ng-model="umr.risk_year" ng-change="umr.UpdateUMR()" autocomplete="off" only-digits maxlength="4" class="form-control input-sm" /><span class="mandatory-mark">*</span>
@@ -93,7 +98,7 @@
           </div>
           <div class="col-xs-7">
             <p ng-show="umrForm.risk_year.$invalid && !umrForm.risk_year.$pristine" class="help-block ucr-validation-error">Risk Year is required.</p>
-            <p ng-show="(umr.risk_year.length < 4) && !umrForm.risk_year.$pristine" class="help-block ucr-validation-error">Risk Year must be 4 chars in length.</p>
+            <p ng-show="(umr.risk_year) && (umr.risk_year.length < 4) && !umrForm.risk_year.$pristine" class="help-block ucr-validation-error">Risk Year must be 4 chars in length.</p>
           </div>
         </div>
 
@@ -122,14 +127,14 @@
           </div>
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error' : (umrForm.unique_policy_number.$invalid && !umrForm.unique_policy_number.$pristine)  || ((umr.unique_policy_number.length < 4) && !umrForm.unique_policy_number.$pristine)}">
+        <div class="form-group" ng-class="{ 'has-error' : (umrForm.unique_policy_number.$invalid && !umrForm.unique_policy_number.$pristine)  || (umr.unique_policy_number && (umr.unique_policy_number.length < 4) && !umrForm.unique_policy_number.$pristine)}">
           <label for="quote" class="col-xs-3 control-label">Unique Policy Number</label>
           <div class="col-xs-2">
             <input ng-readonly="!umr.broker_code" autocomplete="off" required ng-trim="false" name="unique_policy_number" only-digits maxlength="4" ng-change="umr.UpdateUMR()" ng-model="umr.unique_policy_number" class="form-control input-sm" /><span class="mandatory-mark">*</span>
           </div>
           <div class="col-xs-7">
             <p ng-show="umrForm.unique_policy_number.$invalid && !umrForm.unique_policy_number.$pristine" class="help-block">Unique Policy Number is required.</p>
-            <p ng-show="(umr.unique_policy_number.length < 4) && !umrForm.unique_policy_number.$pristine" class="help-block ucr-validation-error">Unique Policy Number must be 4 chars in length.</p>
+            <p ng-show="umr.unique_policy_number && (umr.unique_policy_number.length < 4) && !umrForm.unique_policy_number.$pristine" class="help-block ucr-validation-error">Unique Policy Number must be 4 chars in length.</p>
           </div>
         </div>
 

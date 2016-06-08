@@ -22,14 +22,14 @@
       vm.risk_year = "";
       vm.unique_policy_number = "";
       vm.policy_ref = "";
-
+      vm.selectedUmr = "";
+      vm.selectedQuote = "";
       vm.brokerCodeSelected = "";
 
       vm.UpdateAutocomplete = UpdateAutocomplete;
       vm.UpdateAutocompleteClient = UpdateAutocompleteClient;
       vm.ValidateUMR = ValidateUMR;
       vm.ResetQuote = ResetQuote;
-      vm.CheckQuote = CheckQuote;
       vm.CreateUMR = CreateUMR;
       vm.organisation_name = localStorage.getItem("organisation_name");
       vm.BrokerCodeChanged = BrokerCodeChanged;
@@ -45,8 +45,8 @@
         function FormValid() {
           return ((vm.unique_policy_number) && (vm.unique_policy_number.length != 4)) ||
             ((vm.risk_year) && (vm.risk_year.length != 4)) ||
-            !vm.umrValid ||
-            (vm.from_quote && !vm.quoteValid) ||
+            !vm.selectedUmr ||
+            (vm.from_quote && !vm.selectedQuote) ||
             ((vm.broker_code != vm.main_broker_code) && (!vm.policy_ref)) ||
             !vm.umr_text ||
             (vm.umr_text.length < 5);
@@ -77,9 +77,11 @@
 
               vm.quote = "";
               $scope.umrForm.quote_reference.$setPristine();
+              $scope.umrForm.quote_reference.$setUntouched();
 
               vm.umr_text = "";
               $scope.umrForm.umr_text.$setPristine();
+              $scope.umrForm.umr_text.$setUntouched();
 
               vm.insurance_name = "";
               $scope.umrForm.insurance_name.$setPristine();
@@ -92,12 +94,15 @@
 
               vm.risk_year = "";
               $scope.umrForm.risk_year.$setPristine();
+              $scope.umrForm.risk_year.$setUntouched();
 
               vm.unique_policy_number = "";
               $scope.umrForm.unique_policy_number.$setPristine();
+              $scope.umrForm.unique_policy_number.$setUntouched();
 
-              vm.policy_ref = "";
+              vm.policy_ref = vm.main_broker_code;
               $scope.umrForm.policy_ref.$setPristine();
+              $scope.umrForm.policy_ref.$setUntouched();
 
               vm.open_market = true;
               $scope.umrForm.open_market.$setPristine();
@@ -150,8 +155,12 @@
         }
 
         function UpdateUMR() {
-          if (vm.broker_code == vm.main_broker_code) {
+          if (vm.broker_code != vm.main_broker_code) {
 
+            vm.policy_ref = vm.main_broker_code + (vm.dep_code ? vm.dep_code : "") +
+              ((vm.risk_year && vm.risk_year.length == 4) ? vm.risk_year.substring(2, 4) : "") +
+              (vm.unique_policy_number ? vm.unique_policy_number : "");
+          } else {
             vm.umr_text = (vm.dep_code ? vm.dep_code : "") +
               ((vm.risk_year && vm.risk_year.length == 4) ? vm.risk_year.substring(2, 4) : "") +
               (vm.unique_policy_number ? vm.unique_policy_number : "");
@@ -160,42 +169,40 @@
 
         function UpdateClientDetails() {
 
-          var hasData;
-
-          if (!angular.element("#client_name").data('ui-autocomplete')) {
-            return;
-          }
-
-          vm.umrValid = false;
-          if (angular.element("#client_name").autocomplete("option", "source")) {
-
-            hasData = angular.element("#client_name")
-              .autocomplete("option", "source")
-              .filter(function (val) { return val.label == angular.element("#client_name").val() });
-
-            if (hasData && hasData.length) {
-              vm.umrValid = true;
-              GetClientDetails();
-            } else {
-              angular.element(".accordion-body").empty();
-            }
+          if (vm.selectedUmr) {
+            GetClientDetails();
+          } else {
+            angular.element(".accordion-body").empty();
           }
         }
 
         function CreateUMR() {
+
+            var umrToTest = vm.broker_code + vm.umr_text
+
             if (!(vm.broker_code && vm.umr_text)) {
               modalFactory.showModal("Warning", "<div>Please complete mandatory fields.</div>");
               return;
             }
 
             angular.element.loadingLayerTIW();
-            umrService.ValidateUMR(vm.organisation_name, vm.broker_code + vm.umr_text).then(function (res) {
+
+            if (vm.broker_code !== vm.main_broker_code) {
+              umrToTest = vm.policy_ref;
+            }
+
+            umrService.ValidateUMR(vm.organisation_name, umrToTest).then(function (res) {
               if (res.data && res.data.IsValid) {
                   ProceedUMRCreation();
 
               } else if (res.data && res.data.FailReason) {
                 angular.element.loadingLayerTIW();
-                modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>");
+                if (res.data.Url) {
+                  modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder. </div><br>");
+                } else {
+                  modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>");
+
+                }
               }
 
             }, function () {
@@ -214,11 +221,11 @@
 
                 var idQuoteNode = 0;
 
-                if (angular.element("#quote_reference").attr("idelement")) {
-                    idQuoteNode = angular.element("#quote_reference").attr("idelement");
+                if (vm.selectedQuote) {
+                  idQuoteNode = vm.selectedQuote;
                 }
 
-                umrService.CreateUMR(vm.organisation_name, angular.element("#client_name").attr("idelement"), angular.element("#ClientName").val(), angular.element("#ClientCode").val(), angular.element("#Location").val(), vm.broker_code,vm.umr_text.toUpperCase(),
+                umrService.CreateUMR(vm.organisation_name, vm.selectedUmr, angular.element("#ClientName").val(), angular.element("#ClientCode").val(), angular.element("#Location").val(), vm.broker_code,vm.umr_text.toUpperCase(),
                     vm.policy_ref, vm.from_quote, idQuoteNode, vm.risk_year, vm.insurance_name, vm.dep_code, vm.class_buss,
                     vm.lineslip, vm.binding_authority, vm.open_market).then(function (res) {
 
@@ -251,42 +258,24 @@
         }
 
         function UpdateAutocompleteClient() {
-            clientsService.SearchClient(vm.organisation_name, vm.client_name, 10)
+          clientsService.SearchClient(vm.organisation_name, vm.client_name, 10)
             .then(function (data) {
-                vm.clientsList = [];
-
-                angular.forEach(data.data, function (val) {
-                    vm.clientsList.push({ "label": val.Name, "value": val.NodeId });
-                });
+              vm.clientsList = [];
+              angular.forEach(data.data, function (val) {
+                vm.clientsList.push({ "label": val.Name, "value": val.NodeId });
+              });
             });
         }
 
         function UpdateAutocomplete() {
-            quoteService.SearchQuote(localStorage.getItem("organisation_name"), vm.quote, vm.include_archived, 10)
+          quoteService.SearchQuote(vm.organisation_name, vm.quote, vm.include_archived, 10)
             .then(function (data) {
-                vm.quotesList = [];
-                angular.forEach(data.data, function (val) {
-                    vm.quotesList.push({ "label": val.QuoteValue, "value": val.QuoteNodeId });
-                });
+              vm.quotesList = [];
+              angular.forEach(data.data, function (val) {
+                vm.quotesList.push({ "label": val.QuoteValue, "value": val.QuoteNodeId });
+              });
             });
         }
-
-        function CheckQuote() {
-            if (!angular.element("#quote_reference").data('ui-autocomplete')) {
-                return;
-            }
-            vm.quoteValid = false;
-            if (angular.element("#quote_reference").autocomplete("option", "source")) {
-
-                var hasData = angular.element("#quote_reference").autocomplete("option", "source")
-                  .filter(function (val) { return val.label == angular.element("#quote_reference").val() });
-
-                if (hasData && hasData.length) {
-                    vm.quoteValid = true;
-                }
-            }
-        }
-
 
         function GetClientDetails() {
 
@@ -351,7 +340,9 @@
         }
 
         function GetClassOfBussiness() {
+          angular.element.loadingLayerTIW();
             umrService.GetCOB(localStorage.getItem("organisation_name")).then(function (codes) {
+              angular.element.loadingLayerTIW();
                 if (codes.data) {
                     vm.class_of_bussiness_list = codes.data;
                     GetBrokerCodes();
@@ -377,6 +368,7 @@
                     if (main) {
                         vm.main_broker_code = main[0].BrokerCode;
                     }
+                    vm.policy_ref = vm.main_broker_code;
                 }
 
             }, function () {
@@ -388,49 +380,54 @@
 
         function ValidateUMR() {
 
-            if ((vm.broker_code) && (vm.umr_text)) {
-                umrService.ValidateUMR(localStorage.getItem("organisation_name"), vm.broker_code + vm.umr_text).then(function (res) {
-                    if (!(res.data && res.data.IsValid)) {
-                        if (res.data && res.data.FailReason) {
-                          modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>");
-                        }
-                    }
-                }, function () {
-                  angular.element.loadingLayerTIW();
-                  modalFactory.showModal("Warning", "<div>An error occurred. Please try again later</div>");
-                });
-            }
+          if ((vm.broker_code) && (vm.umr_text)) {
+            umrService.ValidateUMR(localStorage.getItem("organisation_name"), vm.broker_code + vm.umr_text).then(function (res) {
+              if (!(res.data && res.data.IsValid)) {
+                if (res.data && res.data.FailReason) {
+
+                  if (res.data.Url) {
+                    modalFactory.showModal("Warning", "<div>" + res.data.FailReason +  "<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder. </div><br>");
+                  } else {
+                    modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>");
+
+                  }
+                }
+              }
+            }, function () {
+              angular.element.loadingLayerTIW();
+              modalFactory.showModal("Warning", "<div>An error occurred. Please try again later</div>");
+            });
+          }
         }
 
         function CheckMandatoryFields() {
-            var res;
-            res = (vm.client_name && vm.broker_code && vm.umr_text && vm.risk_year && vm.dep_code && vm.class_buss && vm.unique_policy_number);
-            if (vm.broker_code != vm.main_broker_code) { //policy_ref is mandatory if it is displayed
-                res = res && vm.policy_ref;
-            }
+          var res;
+          res = (vm.client_name && vm.broker_code && vm.umr_text && vm.risk_year && vm.dep_code && vm.class_buss && vm.unique_policy_number);
+          if (vm.broker_code != vm.main_broker_code) { //policy_ref is mandatory if it is displayed
+            res = res && vm.policy_ref;
+          }
 
-            //check year
-            if (vm.risk_year.length != 4) {
-                res = false;
-            }
-            //check unique policy number
-            if (vm.unique_policy_number.length != 4) {
-                res = false;
-            }
+          //check year
+          if (vm.risk_year.length != 4) {
+            res = false;
+          }
+          //check unique policy number
+          if (vm.unique_policy_number.length != 4) {
+            res = false;
+          }
 
-            //check client name
-            if (!angular.element("#client_name").attr("idelement")) {
-                res = false;
-            }
+          //check client name
+          if (!vm.selectedUmr) {
+            res = false;
+          }
 
-            //check from_quote
-            if (vm.from_quote) {
-                if (!angular.element("#quote_reference").attr("idelement")) {
-                    res = false;
-                }
+          //check from_quote
+          if (vm.from_quote) {
+            if (!vm.selectedQuote) {
+              res = false;
             }
-
-            return res;
+          }
+          return res;
         }
 
       angular.element('#accordion').on('shown.bs.collapse', function () {
@@ -445,7 +442,7 @@
       });
 
       angular.element("#headingOne").on("click", function (e) {
-          if (!angular.element("#client_name").attr("idelement")) {
+          if (!vm.selectedUmr) {
               e.preventDefault();
               return false;
           }

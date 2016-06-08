@@ -111,8 +111,10 @@
                         angular.element.loadingLayerTIW();
                         vm.ucrValid = false;
                         if (res.data && res.data.FailReason) {
+                          if (res.data.Url) {
+                            modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder. </div><br>");
+                          }
                           vm.ucrErrorText = res.data.FailReason;
-
                         }
                     }
                 }, function () {
@@ -196,7 +198,7 @@
         }
 
 
-        angular.element("#umr,#claim_reference").ForceStrictAlphaNumerics();
+        angular.element("#umr,#ucr").ForceStrictAlphaNumerics();
 
     }
 

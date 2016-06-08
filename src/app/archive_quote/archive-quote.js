@@ -49,8 +49,8 @@
     }
 
 
-    function UpdateAutocomplete(w) {
-      vm.quote = w;
+    function UpdateAutocomplete() {
+
       quoteService.SearchQuote(localStorage.getItem("organisation_name"), vm.quote,false,10)
         .then(function (data) {
           vm.quotesList = data.data;
