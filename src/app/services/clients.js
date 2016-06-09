@@ -29,17 +29,17 @@
               //return $http.post("../../Client/CheckClientCode", { organisation: organisation, clientCode: clientCode });
           },
           CreateClientFolder: function (organisation, clientName, clientCode, groupFolderNodeId, location) {
-            return $http.post("http://localhost:8000/save_client", { organisation: organisation, clientName: clientName, clientCode: clientCode, groupFolderNodeId: groupFolderNodeId, location: location });
+            return $http.post("http://localhost:8000/clients/save_client", { organisation: organisation, clientName: clientName, clientCode: clientCode, groupFolderNodeId: groupFolderNodeId, location: location });
               //return $http.post("../../Client/CreateClientFolder", { organisation: organisation, clientName: clientName, clientCode: clientCode, groupFolderNodeId: groupFolderNodeId, location: location });
           },
           getOrganisationTypes : function(){
             return $http.get("app/json/organisations.json");
           },
           getClientList : function(organisation){
-            return $http.get("http://localhost:8000/client_folders");
+            return $http.get("http://localhost:8000/clients/list/" + organisation);
           },
           deleteClient : function(client){
-            return $http.post("http://localhost:8000/delete_client", {client : client});
+            return $http.post("http://localhost:8000/clients/delete_client", {client : client});
           }
 
 

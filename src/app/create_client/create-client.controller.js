@@ -46,7 +46,7 @@
     function DeleteClient(client){
       console.log(client);
       clientsService.deleteClient(client).then(function(response){
-        console.log(response);
+        vm.ClientList = response.data.clients;
       });
 
     }

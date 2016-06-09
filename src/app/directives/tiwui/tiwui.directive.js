@@ -158,6 +158,7 @@ angular.module('tiwUI.autocomplete', [])
         '</ul>',
         '</div>'].join(""),
       restrict: 'A',
+      scope : true,
       link: link
     };
 
