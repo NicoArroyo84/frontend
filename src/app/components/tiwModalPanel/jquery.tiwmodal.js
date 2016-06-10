@@ -59,7 +59,7 @@
 								'<div class="modal-dialog">' +
 							  '<div class="modal-content">' +
 								'<div class="modal-header">' +
-								  '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+								  //'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
 								  '<h4 class="modal-title"></h4>' +
 								'</div>' +
 								'<div class="modal-body" ' + (options.height ? 'style="overflow-y:auto;height:' + options.height + 'px;"'  : "") +  ' >' +
@@ -68,7 +68,7 @@
 								'<div class="modal-footer">' +
                                     '<button type="button" class="btn btn-tiw-green btn  btn-primary extra-button"></button>' +
 								  '<button ' + (options.acceptButton.disabled ? "disabled" : "") + ' type="button" class="btn btn-tiw-green btn  btn-primary btn-accept ' + (options.revertButton ? 'revert-button' : '') + '"></button>' +
-								  '<button type="button" class="btn btn-tiw-green btn btn-primary btn-default" data-dismiss="modal">Cancel</button>' +
+								  '<button type="button" class="btn btn-tiw-green btn btn-primary btn-default btn-cancel" data-dismiss="modal">Cancel</button>' +
 								'</div>' +
 							  '</div>' +
 							'</div>' +

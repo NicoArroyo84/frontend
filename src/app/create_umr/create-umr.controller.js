@@ -139,12 +139,12 @@
                     GetDepartmentCodes();
                 } else {
                     angular.element.loadingLayerTIW();
-                    $state.go("main");
+                  $state.go("main", { organisation: localStorage.getItem("organisation_name") });
                 }
 
             }, function () {
                 angular.element.loadingLayerTIW();
-                $state.go("main");
+                $state.go("main", { organisation: localStorage.getItem("organisation_name") });
             });
         }
 
@@ -232,14 +232,14 @@
                       angular.element.loadingLayerTIW();
                       if (res.data && res.data.OperationSuccess) {
                         modalFactory.showModal("", "<div>The UMR was created successfully.<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
-                          $state.go("main");
+                          $state.go("main", { organisation: localStorage.getItem("organisation_name") });
                           $scope.$apply();
                         });
 
                       } else {
                         if (res.data) {
                           modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>", function () {
-                            $state.go("main");
+                            $state.go("main", { organisation: localStorage.getItem("organisation_name") });
                             $scope.$apply();
                           });
                         }

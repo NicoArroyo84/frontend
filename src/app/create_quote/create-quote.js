@@ -3,8 +3,6 @@
 (function () {
     'use strict';
 
-
-
     angular
        .module('triremeApp')
        .controller('CreateQuoteController', CreateQuoteController);
@@ -12,7 +10,7 @@
     function CreateQuoteController($state, $scope, quoteService, userService,modalFactory) {
       var vm = this;
 
-
+      vm.deleteQuote = deleteQuote;
       vm.Cancel = Cancel;
       vm.Finish = Finish;
       vm.UpdateAutocomplete = UpdateAutocomplete;
@@ -36,6 +34,20 @@
           });
       }
 
+      function deleteQuote(quote){
+        quoteService.deleteQuote(quote).then(function(response){
+          vm.quoteList = response.data.quotes;
+        });
+      }
+
+      getQuotes();
+      vm.costumColumns = [{ "name": "col1", "template": "<a ng-click='quote.deleteQuote(dat)'>Delete</a>" }];
+      function getQuotes(){
+        vm.quoteList = [];
+        quoteService.getQuotesList(localStorage.getItem("organisation_name")).then(function(response){
+          vm.quoteList = response.data.quotes;
+        });
+      }
 
       function UpdateAutocomplete() {
           quoteService.SearchQuote(localStorage.getItem("organisation_name"), vm.quote, false, 10)
@@ -101,14 +113,16 @@
 
                   angular.element.loadingLayerTIW();
                   if (response.data && response.data.OperationSuccess) {
+
                     modalFactory.showModal("", "<div>The Quote was created successfully.<br><br>Press <a target='_blank' href='" + response.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
-                      $state.go("main");
+                      $state.go("main", { organisation: localStorage.getItem("organisation_name") });
                       $scope.$apply();
                     });
+
                   } else {
                     if (response.data) {
                       modalFactory.showModal("Warning", "<div>" + response.data.FailReason + "</div>", function () {
-                        $state.go("main");
+                        $state.go("main", { organisation: localStorage.getItem("organisation_name") });
                         $scope.$apply();
                       });
                     }
@@ -123,15 +137,31 @@
 
                   angular.element.loadingLayerTIW();
                 if (response.data && response.data.OperationSuccess) {
+                  getQuotes();
                   modalFactory.showModal("", "<div>The Quote was created successfully.<br><br>Press <a target='_blank' href='" + response.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
-                    $state.go("main");
+                    vm.quote_reference = "";
+                    vm.quote_name = "";
+                    vm.archived = false;
+                    $scope.quoteForm.$setPristine();
+                    $scope.quoteForm.$setUntouched();
                     $scope.$apply();
+
+                  },true,function(){
+                    $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+                    $scope.$apply();
+
                   });
+
+
+                  //modalFactory.showModal("", "<div>The Quote was created successfully.<br><br>Press <a target='_blank' href='" + response.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
+                  //  $state.go("main", { organisation: localStorage.getItem("organisation_name") });
+                  //  $scope.$apply();
+                  //});
 
                 } else {
                   if (response.data) {
                     modalFactory.showModal("Warning", "<div>" + response.data.FailReason + "</div>", function () {
-                      $state.go("main");
+                      $state.go("main", { organisation: localStorage.getItem("organisation_name") });
                       $scope.$apply();
                     });
                   }
