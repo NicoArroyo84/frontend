@@ -120,60 +120,73 @@ angular.module('tiwUI.autocomplete', [])
 
   function tiwTable($sce){
     return {
-      template: ['<div class="table-container">',
-        '<table class="table table-bordered table-striped">',
-        '<thead>',
-        '<tr>',
-        '<th type="{{h}}" ng-click="order(h)" ng-show="columns.indexOf(h) >= 0" ng-repeat="h in header">{{costumColumnsName[h]}}<span ng-class="{ \'glyphicon-chevron-down\' : {{h+\'Sorting\'}} ,\'glyphicon-chevron-up\' : {{h+\'SortingInverted\'}}  }" class="glyphicon"></span></th>',
-        '</tr>',
-        '</thead>',
-        '<tr  ng-show="($index < (currentPage*docsPerPage)) && ($index >= (currentPage*docsPerPage - docsPerPage)) " ng-repeat="dat in rows | orderBy:predicate:reverse">', // "
-        '<td bind-html-compile="dat[col]"  ng-repeat="col in columns" class="table-name-column">{{dat[col]}}</td>', //ng-bind-html allow to insert html content. {{dat[col]}} is the key that allows to get the columns order in regards the array columns provided
-        '</tr>',
-        '</table>',
-        '</div>',
-        '<div class="pagination-container">',
-        '<ul class="pagination">',
-        '<li>',
-        '<a ng-click="currentPage = 1" aria-label="First">',
-        '<span aria-hidden="true">&laquo;</span>',
-        '</a>',
-        '</li>',
-        '<li>',
-        '<a ng-click="(currentPage > 1)&&(currentPage = currentPage-1)" aria-label="Prev">',
-        '<span aria-hidden="true">&lt;</span>',
-        '</a>',
-        '</li>',
-        '<li  ng-show="($index < (currentPage + 5)) && ($index >= (currentPage - 5))" ng-repeat="a in TableRange(notPublishedPages) track by $index"><a ng-class="{\'highlighted\': currentPage - 1 == $index }" ng-click="ChangePage($index+1)">{{$index + 1}}</a></li>',
-        '<li>',
-        '<a ng-click="(currentPage < notPublishedPages) && (currentPage = currentPage+1)" aria-label="Next">',
-        '<span aria-hidden="true">&gt;</span>',
-        '</a>',
-        '</li>',
-        '<li>',
-        '<a ng-click="currentPage = notPublishedPages" aria-label="Last">',
-        '<span aria-hidden="true">&raquo;</span>',
-        '</a>',
-        '</li>',
-        '</ul>',
-        '</div>'].join(""),
+      templateUrl : "app/directives/tiwui/table/table_template.html",
+      //template: ['<div class="table-container">',
+      //  '<table class="table table-bordered table-striped">',
+      //  '<thead>',
+      //  '<tr>',
+      //  '<th type="{{h}}" ng-click="order(h)" ng-show="columns.indexOf(h) >= 0" ng-repeat="h in header">{{costumColumnsName[h]}}<span ng-class="{ \'glyphicon-chevron-down\' : {{h+\'Sorting\'}} ,\'glyphicon-chevron-up\' : {{h+\'SortingInverted\'}}  }" class="glyphicon"></span></th>',
+      //  '</tr>',
+      //  '</thead>',
+      //  '<tr  ng-show="($index < (currentPage*docsPerPage)) && ($index >= (currentPage*docsPerPage - docsPerPage)) " ng-repeat="dat in rows | orderBy:predicate:reverse">', // "
+      //  '<td bind-html-compile="dat[col]"  ng-repeat="col in columns" class="table-name-column">{{dat[col]}}</td>', //ng-bind-html allow to insert html content. {{dat[col]}} is the key that allows to get the columns order in regards the array columns provided
+      //  '</tr>',
+      //  '</table>',
+      //  '</div>',
+      //  '<div class="pagination-container">',
+      //  '<ul class="pagination">',
+      //  '<li>',
+      //  '<a ng-click="currentPage = 1" aria-label="First">',
+      //  '<span aria-hidden="true">&laquo;</span>',
+      //  '</a>',
+      //  '</li>',
+      //  '<li>',
+      //  '<a ng-click="(currentPage > 1)&&(currentPage = currentPage-1)" aria-label="Prev">',
+      //  '<span aria-hidden="true">&lt;</span>',
+      //  '</a>',
+      //  '</li>',
+      //  '<li  ng-show="($index < (currentPage + 5)) && ($index >= (currentPage - 5))" ng-repeat="a in TableRange(notPublishedPages) track by $index"><a ng-class="{\'highlighted\': currentPage - 1 == $index }" ng-click="ChangePage($index+1)">{{$index + 1}}</a></li>',
+      //  '<li>',
+      //  '<a ng-click="(currentPage < notPublishedPages) && (currentPage = currentPage+1)" aria-label="Next">',
+      //  '<span aria-hidden="true">&gt;</span>',
+      //  '</a>',
+      //  '</li>',
+      //  '<li>',
+      //  '<a ng-click="currentPage = notPublishedPages" aria-label="Last">',
+      //  '<span aria-hidden="true">&raquo;</span>',
+      //  '</a>',
+      //  '</li>',
+      //  '</ul>',
+      //  '</div>'].join(""),
       restrict: 'A',
-      scope : true,
+      transclude : true,
+      scope : {
+        data : '@'
+      },
       link: link
     };
 
     function link(scope, element, attrs) {
       //this will allow to get the reference to the parent model, it can be provided via an "controller as syntax" such as CtrlMain as main --> main.data, or without the "as syntax" CtrlMain --> data
-      var ctrlData = attrs.data;
+     //  var ctrlData = attrs.data;
 
       //if the data is provided in the page bootstrapping this will construct the table
-      scope.$watch(function () {
-          return scope.$eval(ctrlData);
-      },function (data) {
+      //this has been changed, previously in was like below but now using interpolate values (with braces {{}}) so we can use $observe instead of a watcher, which improves performance
+      attrs.$observe('data',function (data) {
         if (data) {
-          ShowTable(data);
+          ShowTable(angular.fromJson(data));
         }
       }, true );
+
+      //DEPRECATED
+      //if the data is provided in the page bootstrapping this will construct the table
+      //scope.$watch(function () {
+      //    return scope.$eval(ctrlData);
+      //},function (data) {
+      //  if (data) {
+      //    ShowTable(data);
+      //  }
+      //}, true );
 
       function ShowTable(data) {
 

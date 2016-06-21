@@ -30,6 +30,10 @@
           //return $http.post("../../Process/GetClassesOfBusiness", { organisation: organisation });
           return $http.get("app/json/cob.json")
         },
+        GetTOB: function(organisation){
+          return $http.post("http://localhost:8000/quotes/tob_list/", { organisation: organisation });
+          //return $http.get("../../Process/GetTypeOfBusiness", { organisation: organisation });
+        },
         CreateUMR: function (organisation, clientFolderNodeId, clientName, clientCode, location, brokerCode, policyReference,
                              internalPolicyReference, fromQuote, quoteFolderNodeId, riskYear, insuredName, departmentCode,
                              classOfBusiness, lineSlip, bindingAuthority, openMarket) {

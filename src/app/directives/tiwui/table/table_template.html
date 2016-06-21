@@ -1,0 +1,39 @@
+<div class="table-container">
+  <div ng-transclude></div>
+  <table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+      <th type="{{h}}" ng-click="order(h)" ng-show="columns.indexOf(h) >= 0" ng-repeat="h in header">{{costumColumnsName[h]}}<span ng-class="{'glyphicon-chevron-down' :  {{h + 'Sorting'}} ,'glyphicon-chevron-up' : {{h + 'SortingInverted'}} }" class="glyphicon"></span></th>
+      </tr>
+    </thead>
+    <tr  ng-show="($index < (currentPage*docsPerPage)) && ($index >= (currentPage*docsPerPage - docsPerPage)) " ng-repeat="dat in rows | orderBy:predicate:reverse">
+      <td bind-html-compile="dat[col]"  ng-repeat="col in columns" class="table-name-column">{{dat[col]}}</td>
+      <!--ng-bind-html allow to insert html content. {{dat[col]}} is the key that allows to get the columns order in regards the array columns provided-->
+      </tr>
+    </table>
+  </div>
+<div class="pagination-container">
+  <ul class="pagination">
+    <li>
+      <a ng-click="currentPage = 1" aria-label="First">
+        <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    <li>
+      <a ng-click="(currentPage > 1)&&(currentPage = currentPage-1)" aria-label="Prev">
+        <span aria-hidden="true">&lt;</span>
+        </a>
+      </li>
+    <li  ng-show="($index < (currentPage + 5)) && ($index >= (currentPage - 5))" ng-repeat="a in TableRange(notPublishedPages) track by $index"><a ng-class="{'highlighted': currentPage - 1 == $index }" ng-click="ChangePage($index+1)">{{$index + 1}}</a></li>
+    <li>
+      <a ng-click="(currentPage < notPublishedPages) && (currentPage = currentPage+1)" aria-label="Next">
+        <span aria-hidden="true">&gt;</span>
+        </a>
+      </li>
+    <li>
+      <a ng-click="currentPage = notPublishedPages" aria-label="Last">
+        <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </div>

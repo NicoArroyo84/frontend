@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');
 
-
 var cache;
 
 var response =  {
@@ -22,7 +21,6 @@ router.get('/search/:query/:organisation/:archived',function(req,res){
 
   cache = readQuotes();
 
-  console.log(cache.quotes);
   cache = cache.quotes.filter(function(elem){
    if(req.params.archived.toLowerCase() === 'true')
       return elem.name.indexOf(req.params.query) >= 0 && (elem.organisation === req.params.organisation);
@@ -43,6 +41,53 @@ router.get('/list', function(req,res) {
 
 });
 
+router.get('/cob_list/:organisation', function(req,res){
+  console.log('----------------------------------------------------------');
+  console.log('GET Retrieving class of business list ... ');
+  console.log('----------------------------------------------------------');
+
+  cache = readCOB();
+  res.json(cache);
+});
+
+
+router.get('/tob_list/:organisation', function(req,res) {
+  console.log('----------------------------------------------------------');
+  console.log('GET Retrieving type of business list ... ');
+  console.log('----------------------------------------------------------');
+
+  cache = readTOB();
+  res.json(cache);
+});
+
+
+
+
+router.get('/list_with_cob', function(req,res){
+
+  var quotes = readQuotes(),
+      cob = readCOB(),
+      ntu = readNTU();
+
+  var auxCob, auxNTU;
+
+
+  quotes.quotes.map(function(elem){
+
+    auxCob = cob.cob.find(function(elem2){ return elem2.Shortcut == elem.classOfBusinessId });
+    elem.classOfBusinessId = (auxCob ? auxCob.Value : "");
+
+    auxNTU = ntu.ntu.find(function(elem2){return elem2.Id == elem.ntuReason });
+    elem.ntuReason = (auxNTU ? auxNTU.Reason : "");
+
+  });
+
+  console.log(quotes);
+
+  res.send(quotes);
+
+});
+
 
 router.get('/list/:organisation', function(req,res) {
   console.log('----------------------------------------------------------');
@@ -56,9 +101,9 @@ router.get('/list/:organisation', function(req,res) {
       return elem.organisation == req.params.organisation;
     });
   }
+
   res.json(cache);
 });
-
 
 router.post('/archive_quote', function(req,res){
 
@@ -70,17 +115,12 @@ router.post('/archive_quote', function(req,res){
   quote.archived = true;
   quote.ntuReason = req.body.idReason;
 
-
   writeQuote();
   res.status(200);
   response.OperationSuccess = true;
   res.send(response);
 
 });
-
-
-
-
 
 router.post('/save_quote',function(req,res){
 
@@ -94,17 +134,15 @@ router.post('/save_quote',function(req,res){
     reference : quote.reference,
     archived : (!!quote.ntuReason),
     ntuReason : (quote.ntuReason ? quote.ntuReason : 0),
-    nodeId : (Math.floor(Math.random() * (100000 - 1 + 1)) + 1)
+    nodeId : (Math.floor(Math.random() * (100000 - 1 + 1)) + 1),
+    classOfBusinessId :  quote.classOfBusiness
   });
-
 
   writeQuote();
   res.status(200);
   response.OperationSuccess = true;
   res.send(response);
 });
-
-
 
 router.post('/delete_quote', function(req,res){
 
@@ -131,6 +169,20 @@ router.post('/delete_quote', function(req,res){
 });
 
 
+
+
+function readNTU(){
+  return JSON.parse(fs.readFileSync(`${__dirname}/ntu.json`, 'utf8'));
+}
+
+
+function readCOB(){
+  return JSON.parse(fs.readFileSync(`${__dirname}/cob.json`, 'utf8'));
+}
+
+function readTOB(){
+  return JSON.parse(fs.readFileSync(`${__dirname}/tob.json`, 'utf8'));
+}
 
 function readQuotes(){
   return JSON.parse(fs.readFileSync(`${__dirname}/quotes.json`, 'utf8'));

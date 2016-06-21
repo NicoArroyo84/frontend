@@ -44,7 +44,6 @@
     vm.DeleteClient = DeleteClient;
 
     function DeleteClient(client){
-      console.log(client);
       clientsService.deleteClient(client).then(function(response){
         vm.ClientList = response.data.clients;
       });
@@ -53,7 +52,6 @@
 
     function getClientList() {
       clientsService.getClientList(localStorage.getItem("organisation_name")).then(function(response){
-        console.log(response);
         vm.ClientList = response.data.clients;
       });
     }

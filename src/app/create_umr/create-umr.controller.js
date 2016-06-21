@@ -42,6 +42,30 @@
 
       vm.FormValid = FormValid;
 
+        function preselectCOB() {
+          var aux = "", quote = "";
+
+          if (vm.selectedQuote) {
+            aux = vm.quotesList.find(function (elem) { return elem.value === vm.selectedQuote }).selectedCOB;
+            quote = vm.class_of_bussiness_list.find(function (elem) { return elem.Value == aux });
+            if (quote) {
+              vm.class_buss = vm.class_of_bussiness_list.find(function (elem) { return elem.Value == aux }).Id.toString();
+            } else {
+              vm.class_buss = "";
+            }
+          }
+        }
+
+        $scope.$watch(function () { return vm.selectedQuote; }, function () {
+
+          preselectCOB();
+        });
+
+        $scope.$watch(function () { return vm.selectedUmr; }, function () {
+
+          UpdateClientDetails();
+        });
+
         function FormValid() {
           return ((vm.unique_policy_number) && (vm.unique_policy_number.length != 4)) ||
             ((vm.risk_year) && (vm.risk_year.length != 4)) ||
@@ -59,6 +83,7 @@
             $scope.umrForm.insurance_name.$pristine &&
             $scope.umrForm.dep_code.$pristine &&
             $scope.umrForm.class_buss.$pristine &&
+            $scope.umrForm.tob.$pristine &&
             $scope.umrForm.risk_year.$pristine &&
             $scope.umrForm.unique_policy_number.$pristine &&
             $scope.umrForm.policy_ref.$pristine &&
@@ -92,6 +117,9 @@
               vm.class_buss = "";
               $scope.umrForm.class_buss.$setPristine();
 
+              vm.tob = "";
+              $scope.umrForm.tob.$setPristine();
+
               vm.risk_year = "";
               $scope.umrForm.risk_year.$setPristine();
               $scope.umrForm.risk_year.$setUntouched();
@@ -103,15 +131,6 @@
               vm.policy_ref = vm.main_broker_code;
               $scope.umrForm.policy_ref.$setPristine();
               $scope.umrForm.policy_ref.$setUntouched();
-
-              vm.open_market = true;
-              $scope.umrForm.open_market.$setPristine();
-
-              vm.binding_authority = false;
-              $scope.umrForm.binding_authority.$setPristine();
-
-              vm.lineslip = false;
-              $scope.umrForm.open_market.$setPristine();
 
 
               vm.from_quote = false;
@@ -198,7 +217,7 @@
               } else if (res.data && res.data.FailReason) {
                 angular.element.loadingLayerTIW();
                 if (res.data.Url) {
-                  modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder. </div><br>");
+                  modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder. </div><br>","BACK");
                 } else {
                   modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>");
 
@@ -227,8 +246,8 @@
 
                 umrService.CreateUMR(vm.organisation_name, vm.selectedUmr, angular.element("#ClientName").val(), angular.element("#ClientCode").val(), angular.element("#Location").val(), vm.broker_code,vm.umr_text.toUpperCase(),
                     vm.policy_ref, vm.from_quote, idQuoteNode, vm.risk_year, vm.insurance_name, vm.dep_code, vm.class_buss,
-                    vm.lineslip, vm.binding_authority, vm.open_market).then(function (res) {
-
+                    //vm.lineslip, vm.binding_authority, vm.open_market).then(function (res) {
+                    vm.tob).then(function (res) {
                       angular.element.loadingLayerTIW();
                       if (res.data && res.data.OperationSuccess) {
                         modalFactory.showModal("", "<div>The UMR was created successfully.<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder or continue to return to the main menu. </div><br>", function () {
@@ -357,7 +376,7 @@
 
         function GetBrokerCodes() {
             umrService.GetBrokerCode(localStorage.getItem("organisation_name")).then(function (codes) {
-                angular.element.loadingLayerTIW();
+
                 if (codes.data) {
                     vm.broker_code_list = codes.data;
 
@@ -369,6 +388,7 @@
                         vm.main_broker_code = main[0].BrokerCode;
                     }
                     vm.policy_ref = vm.main_broker_code;
+                    GetTypesOfBusiness();
                 }
 
             }, function () {
@@ -377,6 +397,17 @@
             });
         }
 
+        function GetTypesOfBusiness() {
+          umrService.GetTOB(localStorage.getItem("organisation_name")).then(function (response) {
+            angular.element.loadingLayerTIW();
+            if (response.data) {
+              vm.tobList = response.data;
+            }
+          }, function () {
+            angular.element.loadingLayerTIW();
+            modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
+          })
+        }
 
         function ValidateUMR() {
 
@@ -386,7 +417,7 @@
                 if (res.data && res.data.FailReason) {
 
                   if (res.data.Url) {
-                    modalFactory.showModal("Warning", "<div>" + res.data.FailReason +  "<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder. </div><br>");
+                    modalFactory.showModal("Warning", "<div>" + res.data.FailReason +  "<br><br>Press <a target='_blank' href='" + res.data.Url + "'>here</a> to go to the folder. </div><br>","BACK");
                   } else {
                     modalFactory.showModal("Warning", "<div>" + res.data.FailReason + "</div>");
 

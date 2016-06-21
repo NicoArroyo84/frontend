@@ -54,7 +54,7 @@
       quoteService.SearchQuote(localStorage.getItem("organisation_name"), vm.quote,false,10)
         .then(function (data) {
           vm.quotesList = [];
-          angular.forEach(data.data, function (val, i) {
+          angular.forEach(data.data, function (val) {
             vm.quotesList.push({ "label": val.name, "value": val.nodeId });
             //vm.quotesList.push({ "label": val.QuoteValue, "value": val.QuoteNodeId });
           });

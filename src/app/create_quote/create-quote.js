@@ -7,7 +7,7 @@
        .module('triremeApp')
        .controller('CreateQuoteController', CreateQuoteController);
 
-    function CreateQuoteController($state, $scope, quoteService, userService,modalFactory) {
+    function CreateQuoteController($state, $scope, quoteService, userService,umrService, modalFactory) {
       var vm = this;
 
       vm.deleteQuote = deleteQuote;
@@ -16,7 +16,7 @@
       vm.UpdateAutocomplete = UpdateAutocomplete;
 
       IsUserAllowed();
-
+      vm.quoteList = [];
       function IsUserAllowed() {
           angular.element.loadingLayerTIW();
           userService.IsUserAllowed($state.params.organisation, "CreateQuote").then(function (res) {
@@ -44,7 +44,7 @@
       vm.costumColumns = [{ "name": "col1", "template": "<a ng-click='quote.deleteQuote(dat)'>Delete</a>" }];
       function getQuotes(){
         vm.quoteList = [];
-        quoteService.getQuotesList(localStorage.getItem("organisation_name")).then(function(response){
+        quoteService.getQuotesListWithCOBText(localStorage.getItem("organisation_name")).then(function(response){
           vm.quoteList = response.data.quotes;
         });
       }
@@ -66,9 +66,9 @@
       function GetNTUReasons() {
 
         quoteService.GetNTUReason(localStorage.getItem("organisation_name")).then(function (reasons) {
-              angular.element.loadingLayerTIW();
               if (reasons.data) {
                   vm.ntu_reasons = reasons.data;
+                GetTypesOfBusiness();
               }
           },
           function () {
@@ -76,6 +76,19 @@
               modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
           });
       }
+
+      function GetTypesOfBusiness() {
+        umrService.GetCOB(localStorage.getItem("organisation_name")).then(function (response) {
+          angular.element.loadingLayerTIW();
+          if (response.data) {
+            vm.tobList = response.data;
+          }
+        }, function () {
+          angular.element.loadingLayerTIW();
+          modalFactory.showModal("Warning", "<div>An unexpected error occurred. Please try again later</div>");
+        })
+      }
+
 
       function Finish() {
 
@@ -109,7 +122,7 @@
           angular.element.loadingLayerTIW();
           if (vm.archived) {
 
-              quoteService.CreateQuoteResponseAndArchive(localStorage.getItem("organisation_name"), vm.quote_reference, vm.quote_name, vm.archive_reason).then(function (response) {
+              quoteService.CreateQuoteResponseAndArchive(localStorage.getItem("organisation_name"), vm.quote_reference, vm.quote_name, vm.cob, vm.archive_reason).then(function (response) {
 
                   angular.element.loadingLayerTIW();
                   if (response.data && response.data.OperationSuccess) {
@@ -133,7 +146,7 @@
               });
 
           } else {
-              quoteService.CreateQuoteResponse(localStorage.getItem("organisation_name"), vm.quote_reference, vm.quote_name).then(function (response) {
+              quoteService.CreateQuoteResponse(localStorage.getItem("organisation_name"), vm.quote_reference, vm.quote_name,vm.cob).then(function (response) {
 
                   angular.element.loadingLayerTIW();
                 if (response.data && response.data.OperationSuccess) {

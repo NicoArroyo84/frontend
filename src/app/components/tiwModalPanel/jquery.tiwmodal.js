@@ -47,10 +47,7 @@
                 text: "ERROR"
             },
             revertButton: false
-
         };
-
-
 
         var options = angular.element.extend(true, angular.element.modalTIW.defaults, opts);
 
@@ -115,8 +112,6 @@
             } catch (e) { }
 
             return str;
-
-
         };
 
         if (angular.element("#myTIWModal").length) {
@@ -139,13 +134,11 @@
           btnCancel.hide();
         } else {
           btnCancel.on("click", options.closeButton.action);
-
             if ((typeof options.closeButton.text != "undefined") && (options.closeButton.text.length)) {
               btnCancel.text(options.closeButton.text);
             } else {
               btnCancel.hide();
             }
-
         }
 
 

@@ -16,7 +16,7 @@
           <label class="col-xs-3 control-label">UMR:</label>
           <div class="col-xs-8">
             <pre>Model: {{ucr.selectedUmr}}</pre>
-            <input id="umr" autocomplete="off" auto-complete auto-complete-id-selected="ucr.selectedUmr" required name="umr" ui-items="ucr.UmrList" ng-blur="ucr.ValidateUMR()" ng-keypress="ucr.umrErrorText=''" ng-change="ucr.UpdateUmr()" ng-model="ucr.umr" class="form-control input-sm text-uppercase" /><span class="mandatory-mark">*</span>
+            <input id="umr" autocomplete="off" auto-complete auto-complete-id-selected="ucr.selectedUmr" required name="umr" ui-items="ucr.UmrList" ng-blur="ucr.ValidateUMR()" ng-change="ucr.UpdateUmr()" ng-model="ucr.umr" class="form-control input-sm text-uppercase" /><span class="mandatory-mark">*</span>
             <p ng-show="ucrForm.umr.$invalid && !ucrForm.umr.$pristine" class="help-block">UMR is required.</p>
             <p ng-show="!ucr.selectedUmr && ucrForm.umr.$touched && ucr.umr" class="help-block">{{ucr.umrErrorText}}</p>
           </div>

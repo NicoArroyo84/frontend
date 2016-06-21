@@ -15,6 +15,10 @@
           strTextAcceptButton = "Continue";
         }
 
+        if (angular.isString(fn)) {
+          strTextAcceptButton = fn;
+        }
+
         if (angular.isDefined(isConfirmModal) && isConfirmModal) {
           strTextAcceptButton = "Yes";
         }
